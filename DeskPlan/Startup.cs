@@ -12,6 +12,9 @@ using DeskPlan.Data;
 using ElectronNET.API;
 using DeskPlan.Core.Context;
 using Microsoft.EntityFrameworkCore;
+using DeskPlan.Core.Repositories.Interfaces;
+using DeskPlan.Core.Repositories;
+using DeskPlan.Data.Services;
 
 namespace DeskPlan
 {
@@ -35,6 +38,11 @@ namespace DeskPlan
             services.AddDbContext<DeskPlanContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase")));
 
+            //Repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            //Services
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
