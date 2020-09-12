@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeskPlan", "DeskPlan\DeskPlan.csproj", "{3F51D2AA-A430-403B-9103-B791B5C79D8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeskPlan.Core", "DeskPlan.Core\DeskPlan.Core.csproj", "{AD98DC24-1894-4D34-8D4B-576DB988A19A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F51D2AA-A430-403B-9103-B791B5C79D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F51D2AA-A430-403B-9103-B791B5C79D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F51D2AA-A430-403B-9103-B791B5C79D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F51D2AA-A430-403B-9103-B791B5C79D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD98DC24-1894-4D34-8D4B-576DB988A19A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD98DC24-1894-4D34-8D4B-576DB988A19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD98DC24-1894-4D34-8D4B-576DB988A19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD98DC24-1894-4D34-8D4B-576DB988A19A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A4CB564-5181-4BC3-A09B-D21148A73E44}
+	EndGlobalSection
+EndGlobal
