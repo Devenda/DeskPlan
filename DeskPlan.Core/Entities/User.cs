@@ -15,8 +15,8 @@ namespace DeskPlan.Core.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public byte[] StartDate { get; set; }
-        public byte[] EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
 
         public virtual ICollection<Planning> Planning { get; set; }
     }

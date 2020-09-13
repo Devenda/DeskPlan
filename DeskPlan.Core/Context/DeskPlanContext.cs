@@ -19,7 +19,6 @@ namespace DeskPlan.Core.Context
         public virtual DbSet<Desk> Desk { get; set; }
         public virtual DbSet<Planning> Planning { get; set; }
         public virtual DbSet<Room> Room { get; set; }
-        public virtual DbSet<Sysdiagrams> Sysdiagrams { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -69,7 +68,8 @@ namespace DeskPlan.Core.Context
 
                 entity.HasOne(d => d.Desk)
                     .WithMany(p => p.Planning)
-                    .HasForeignKey(d => d.DeskId);
+                    .HasForeignKey(d => d.DeskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Planning)
@@ -88,45 +88,13 @@ namespace DeskPlan.Core.Context
                     .HasColumnType("nvarchar(100)");
             });
 
-            modelBuilder.Entity<Sysdiagrams>(entity =>
-            {
-                entity.HasKey(e => e.DiagramId);
-
-                entity.ToTable("sysdiagrams");
-
-                entity.HasIndex(e => new { e.PrincipalId, e.Name })
-                    .HasName("sysdiagrams_UK_principal_name")
-                    .IsUnique();
-
-                entity.Property(e => e.DiagramId)
-                    .HasColumnName("diagram_id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Definition)
-                    .HasColumnName("definition")
-                    .HasColumnType("image");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasColumnType("nvarchar(128)");
-
-                entity.Property(e => e.PrincipalId)
-                    .HasColumnName("principal_id")
-                    .HasColumnType("int");
-
-                entity.Property(e => e.Version)
-                    .HasColumnName("version")
-                    .HasColumnType("int");
-            });
-
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.UserId).ValueGeneratedNever();
 
                 entity.Property(e => e.EmailAddress).HasColumnType("nvarchar(50)");
 
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("nvarchar(50)");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -140,7 +108,7 @@ namespace DeskPlan.Core.Context
 
                 entity.Property(e => e.StartDate)
                     .IsRequired()
-                    .HasColumnType("datetime");
+                    .HasColumnType("nvarchar(50)");
             });
 
             OnModelCreatingPartial(modelBuilder);
