@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using DeskPlan.Core.Repositories.Interfaces;
 using DeskPlan.Core.Repositories;
 using DeskPlan.Data.Services;
+using ElectronNET.API.Entities;
+using DeskPlan.Tools;
 
 namespace DeskPlan
 {
@@ -69,6 +71,53 @@ namespace DeskPlan
 
             // Open the Electron-Window here
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
+
+            StartElectron();
+        }
+
+        private async void StartElectron()
+        {
+            var menu = new MenuItem[] {
+                new MenuItem {
+                    Label = "File",
+                    Type=MenuType.submenu,
+                    Submenu = new MenuItem[]
+                    {
+                        new MenuItem
+                        {
+                            Label = "Import Users", Type=MenuType.normal, Click = async () =>
+                                {
+                                    var mainWindow = Electron.WindowManager.BrowserWindows.First();
+                                    var options = new OpenDialogOptions
+                                    {
+                                        DefaultPath= "C:/",
+                                        Properties = new OpenDialogProperty[] {OpenDialogProperty.openFile}
+                                    };
+
+                                    var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
+
+                                    if (files.Length >= 1){
+                                        UserImport import = new UserImport();
+                                        import.Import(files[0]);
+                                    }
+                                }
+                            }
+                        }
+                },
+                new MenuItem {
+                    Label = "View",
+                    Type = MenuType.submenu,
+                    Submenu = new MenuItem[] {
+                        new MenuItem {
+                            Label = "Open Developer Tools",
+                            Accelerator = "CmdOrCtrl+I",
+                            Click = () => Electron.WindowManager.BrowserWindows.First().WebContents.OpenDevTools()
+                        }
+                    }
+                }
+            };
+
+            Electron.Menu.SetApplicationMenu(menu);
         }
     }
 }
