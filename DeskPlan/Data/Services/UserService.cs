@@ -1,8 +1,6 @@
-﻿
-using DeskPlan.Core.Entities;
-using DeskPlan.Core.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using DeskPlan.Core.Repositories.Interfaces;
+using DeskPlan.Data.Mapper;
+using DeskPlan.Data.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +18,8 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<User>> GetAllUsers()
         {
-            return await _userRepository.GetAllUsers();
+            return (await _userRepository.GetAllUsers()).Select(u => u.ToModel())
+                                                        .ToList();
         }
     }
 }
