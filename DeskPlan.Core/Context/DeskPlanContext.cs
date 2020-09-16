@@ -90,7 +90,9 @@ namespace DeskPlan.Core.Context
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.UserId).ValueGeneratedNever();
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.EmailAddress).HasColumnType("nvarchar(50)");
 
@@ -103,8 +105,6 @@ namespace DeskPlan.Core.Context
                 entity.Property(e => e.LastName)
                     .IsRequired()
                     .HasColumnType("nvarchar(50)");
-
-                entity.Property(e => e.Number).HasColumnType("int");
 
                 entity.Property(e => e.StartDate)
                     .IsRequired()

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DeskPlanContext _dpContext;
 
@@ -21,6 +21,12 @@ namespace DeskPlan.Core.Repositories
         public async Task<List<User>> GetAllUsers()
         {
             return await _dpContext.User.ToListAsync();
+        }
+
+        public async void UpsertUser(User user)
+        {
+            _dpContext.Entry(user).State = user.UserId == 0 ? EntityState.Added : EntityState.Modified;
+            _dpContext.SaveChanges();
         }
     }
 }

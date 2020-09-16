@@ -11,7 +11,6 @@ namespace DeskPlan.Core.Entities
         }
 
         public long UserId { get; set; }
-        public long Number { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }

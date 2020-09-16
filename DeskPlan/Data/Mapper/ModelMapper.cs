@@ -15,7 +15,6 @@ namespace DeskPlan.Data.Mapper
                 return new Model.User
                 {
                     UserId = user.UserId,
-                    Number = user.Number,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     EmailAddress = user.EmailAddress,
