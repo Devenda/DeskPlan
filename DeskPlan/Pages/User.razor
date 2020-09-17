@@ -37,6 +37,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await UserService.UpsertUser(new Core.Entities.User
+        {
+            UserId = 1,
+            FirstName = "Tinus",
+            LastName = "Scheppers",
+            StartDate = "2020-07-01"
+        });
+
         users = await UserService.GetAllUsers();
     }
 }

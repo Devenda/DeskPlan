@@ -18,15 +18,30 @@ namespace DeskPlan.Core.Repositories
             _dpContext = dpContext;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             return await _dpContext.User.ToListAsync();
         }
 
-        public async void UpsertUser(User user)
+        public async Task UpsertUserAsync(User user)
         {
+            _dpContext.Set<User>().Attach(user);
             _dpContext.Entry(user).State = user.UserId == 0 ? EntityState.Added : EntityState.Modified;
-            _dpContext.SaveChanges();
+
+            await _dpContext.SaveChangesAsync();
+
+            //var u = await _dpContext.User.Where(u => u.UserId == user.UserId)
+            //                             .FirstOrDefaultAsync();
+            //if (u == null)
+            //{
+            //    await _dpContext.User.AddAsync(user);
+            //}
+            //else
+            //{
+
+            //}
+
+            //await _dpContext.SaveChangesAsync();
         }
     }
 }

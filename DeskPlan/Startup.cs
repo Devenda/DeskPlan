@@ -28,6 +28,7 @@ namespace DeskPlan
         }
 
         public IConfiguration Configuration { get; }
+        public UserService _userService { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -41,14 +42,15 @@ namespace DeskPlan
                 options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase")));
 
             //Repositories
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             //Services
-            services.AddScoped<UserService>();
+            services.AddTransient<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserService userService)
         {
             if (env.IsDevelopment())
             {
@@ -72,10 +74,12 @@ namespace DeskPlan
             // Open the Electron-Window here
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
 
+            // Config menu
+            _userService = userService;
             StartElectron();
         }
 
-        private async void StartElectron()
+        private void StartElectron()
         {
             var menu = new MenuItem[] {
                 new MenuItem {
@@ -97,8 +101,15 @@ namespace DeskPlan
                                     var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
                                     if (files.Length >= 1){
-                                        UserImport import = new UserImport();
-                                        import.Import(files[0]);
+                                        //UserImport import = new UserImport(_userService);
+                                        //await import.Import(files[0]);
+                                        await _userService.UpsertUser(new Core.Entities.User
+                                        {
+                                            UserId = 1,
+                                            FirstName ="Tinus",
+                                            LastName = "Scheppers",
+                                            StartDate = "2020-07-01"
+                                        });
                                     }
                                 }
                             }

@@ -8,6 +8,8 @@ namespace DeskPlan.Core.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetAllUsers();
+        Task<List<User>> GetAllUsersAsync();
+
+        Task UpsertUserAsync(User user);
     }
 }
