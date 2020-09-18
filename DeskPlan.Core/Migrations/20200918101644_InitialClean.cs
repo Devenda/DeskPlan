@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DeskPlan.Core.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialClean : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -104,6 +104,12 @@ namespace DeskPlan.Core.Migrations
                 name: "IX_Planning_UserId",
                 table: "Planning",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Number",
+                table: "User",
+                column: "Number",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

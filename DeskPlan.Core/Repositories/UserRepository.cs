@@ -29,5 +29,12 @@ namespace DeskPlan.Core.Repositories
                                  .On(u => u.Number)
                                  .RunAsync();
         }
+
+        public void UpsertUser(User user)
+        {
+            _dpContext.User.Upsert(user)
+                           .On(u => u.Number)
+                           .Run();
+        }
     }
 }

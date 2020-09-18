@@ -1,7 +1,5 @@
 ﻿using DeskPlan.Core.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories.Interfaces
@@ -11,5 +9,7 @@ namespace DeskPlan.Core.Repositories.Interfaces
         Task<List<User>> GetAllUsersAsync();
 
         Task UpsertUserAsync(User user);
+
+        void UpsertUser(User user);
     }
 }

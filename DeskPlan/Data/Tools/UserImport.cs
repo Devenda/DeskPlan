@@ -32,7 +32,7 @@ namespace DeskPlan.Tools
 
                 foreach (var user in users)
                 {
-                    await _userService.UpsertUser(user);
+                    await _userService.UpsertUserAsync(user);
                 }
             }
         }

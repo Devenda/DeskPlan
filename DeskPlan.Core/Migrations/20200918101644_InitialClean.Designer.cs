@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeskPlan.Core.Migrations
 {
     [DbContext(typeof(DeskPlanContext))]
-    [Migration("20200918075345_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200918101644_InitialClean")]
+    partial class InitialClean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -119,6 +119,9 @@ namespace DeskPlan.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });

@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DeskPlan.Core.Context;
+using DeskPlan.Core.Repositories;
+using DeskPlan.Core.Repositories.Interfaces;
+using DeskPlan.Data.Services;
+using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using DeskPlan.Data;
-using ElectronNET.API;
-using DeskPlan.Core.Context;
-using Microsoft.EntityFrameworkCore;
-using DeskPlan.Core.Repositories.Interfaces;
-using DeskPlan.Core.Repositories;
-using DeskPlan.Data.Services;
-using ElectronNET.API.Entities;
-using DeskPlan.Tools;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Entities = DeskPlan.Core.Entities;
 
 namespace DeskPlan
 {
@@ -28,7 +25,7 @@ namespace DeskPlan
         }
 
         public IConfiguration Configuration { get; }
-        public UserService _userService { get; private set; }
+        public UserService _userService;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -42,10 +39,10 @@ namespace DeskPlan
                 options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase")));
 
             //Repositories
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             //Services
-            services.AddTransient<UserService>();
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,7 +72,6 @@ namespace DeskPlan
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
 
             // Config menu
-            _userService = userService;
             StartElectron();
         }
 
@@ -101,14 +97,9 @@ namespace DeskPlan
                                     var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
                                     if (files.Length >= 1){
-                                        //UserImport import = new UserImport(_userService);
-                                        //await import.Import(files[0]);
-                                        await _userService.UpsertUser(new Core.Entities.User
-                                        {
-                                            UserId = 1,
-                                            FirstName ="Tinus",
-                                            LastName = "Scheppers"
-                                        });
+                                        using var _dbContext = new DeskPlanContext();
+                                        UserRepository ur = new UserRepository(_dbContext);
+                                        
                                     }
                                 }
                             }
