@@ -45,6 +45,8 @@ namespace DeskPlan
 
             //Services
             services.AddScoped<UserService>();
+
+            //Called from menu (no scope)
             services.AddSingleton<UserImport>();
         }
 
@@ -101,7 +103,7 @@ namespace DeskPlan
                                     var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
                                     if (files.Length >= 1){
-                                        await _userImport.Import(files[0]);
+                                        await _userImport.ImportAsync(files[0]);
                                     }
                                 }
                             }
