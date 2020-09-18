@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeskPlan.Core.Entities
 {
-    public partial class Room
+    public class Room
     {
-        public Room()
-        {
-            Desk = new HashSet<Desk>();
-        }
+        [Key]
+        public int RoomId { get; set; }
 
-        public long RoomId { get; set; }
         public string Name { get; set; }
-        public long Desks { get; set; }
 
-        public virtual ICollection<Desk> Desk { get; set; }
+        public int MaxDesks { get; set; }
+
+        public List<Desk>? Desks { get; set; }
     }
 }

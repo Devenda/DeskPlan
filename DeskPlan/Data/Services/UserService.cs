@@ -19,7 +19,7 @@ namespace DeskPlan.Data.Services
         public async Task<List<Model.User>> GetAllUsers()
         {
             return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
-                                                        .ToList();
+                                                             .ToList();
         }
 
         public async Task UpsertUser(Entities.User user)

@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeskPlan.Core.Entities
 {
     public partial class Planning
     {
-        public long PlanningId { get; set; }
-        public long Week { get; set; }
-        public long Year { get; set; }
-        public long DeskId { get; set; }
-        public long UserId { get; set; }
+        [Key]
+        public int PlanningId { get; set; }
 
-        public virtual Desk Desk { get; set; }
-        public virtual User User { get; set; }
+        public int Week { get; set; }
+
+        public int Year { get; set; }
+
+        public int DeskId { get; set; }
+
+        public int UserId { get; set; }
+
+
+        public Desk Desk { get; set; }
+
+        public User User { get; set; }
+
+
     }
 }

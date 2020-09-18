@@ -18,8 +18,8 @@ namespace DeskPlan.Data.Mapper
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     EmailAddress = user.EmailAddress,
-                    StartDate = string.IsNullOrEmpty(user.StartDate) ? (DateTime?)null : DateTime.Parse(user.StartDate, null, DateTimeStyles.RoundtripKind),
-                    EndDate = string.IsNullOrEmpty(user.EndDate) ? (DateTime?)null : DateTime.Parse(user.EndDate, null, DateTimeStyles.RoundtripKind)
+                    StartDate = user.StartDate,
+                    EndDate = user.EndDate
                 };
             }
 

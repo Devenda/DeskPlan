@@ -107,8 +107,7 @@ namespace DeskPlan
                                         {
                                             UserId = 1,
                                             FirstName ="Tinus",
-                                            LastName = "Scheppers",
-                                            StartDate = "2020-07-01"
+                                            LastName = "Scheppers"
                                         });
                                     }
                                 }
