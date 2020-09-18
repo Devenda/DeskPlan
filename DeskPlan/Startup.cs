@@ -2,6 +2,7 @@ using DeskPlan.Core.Context;
 using DeskPlan.Core.Repositories;
 using DeskPlan.Core.Repositories.Interfaces;
 using DeskPlan.Data.Services;
+using DeskPlan.Tools;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +27,7 @@ namespace DeskPlan
 
         public IConfiguration Configuration { get; }
         public UserService _userService;
+        private UserImport _userImport;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -43,11 +45,12 @@ namespace DeskPlan
 
             //Services
             services.AddScoped<UserService>();
+            services.AddSingleton<UserImport>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            UserService userService)
+            UserImport userImport)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +75,7 @@ namespace DeskPlan
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
 
             // Config menu
+            _userImport = userImport;
             StartElectron();
         }
 
@@ -97,9 +101,7 @@ namespace DeskPlan
                                     var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
                                     if (files.Length >= 1){
-                                        using var _dbContext = new DeskPlanContext();
-                                        UserRepository ur = new UserRepository(_dbContext);
-                                        
+                                        await _userImport.Import(files[0]);
                                     }
                                 }
                             }

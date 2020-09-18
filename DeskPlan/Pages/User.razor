@@ -16,6 +16,8 @@ else
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Started</th>
+                <th>Started</th>
+                <th>Contract end</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +28,7 @@ else
                 <td>@user.LastName</td>
                 <td>@user.EmailAddress</td>
                 <td>@user.StartDate?.ToString("dd/MM/yyyy")</td>
+                <td>@user.EndDate?.ToString("dd/MM/yyyy")</td>
             </tr>
             }
         </tbody>

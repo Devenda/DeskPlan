@@ -99,7 +99,7 @@ namespace DeskPlan.Core.Migrations
                     b.Property<string>("EmailAddress")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

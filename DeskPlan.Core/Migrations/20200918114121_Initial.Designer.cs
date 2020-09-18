@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeskPlan.Core.Migrations
 {
     [DbContext(typeof(DeskPlanContext))]
-    [Migration("20200918101644_InitialClean")]
-    partial class InitialClean
+    [Migration("20200918114121_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,7 +101,7 @@ namespace DeskPlan.Core.Migrations
                     b.Property<string>("EmailAddress")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

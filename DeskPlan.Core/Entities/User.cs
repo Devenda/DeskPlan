@@ -19,7 +19,7 @@ namespace DeskPlan.Core.Entities
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
 
         public List<Planning> Plannings { get; set; }

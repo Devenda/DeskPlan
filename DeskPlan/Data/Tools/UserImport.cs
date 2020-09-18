@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using DeskPlan.Core.Entities;
 using DeskPlan.Data.Services;
 using ElectronNET.API;
@@ -22,19 +23,17 @@ namespace DeskPlan.Tools
 
         public async Task Import(string file)
         {
-            using (var reader = new StreamReader(file))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            using var reader = new StreamReader(file);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            csv.Configuration.MissingFieldFound = null;
+            csv.Configuration.HeaderValidated = null;
+
+            var users = csv.GetRecordsAsync<User>();
+
+            await foreach (var user in users)
             {
-                csv.Configuration.MissingFieldFound = null;
-                csv.Configuration.HeaderValidated = null;
-
-                var users = csv.GetRecords<User>();
-
-                foreach (var user in users)
-                {
-                    await _userService.UpsertUserAsync(user);
-                }
-            }
+                await _userService.UpsertUserAsync(user);
+            }        
         }
     }
 }
