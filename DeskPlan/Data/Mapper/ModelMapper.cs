@@ -8,11 +8,11 @@ namespace DeskPlan.Data.Mapper
 {
     public static class ModelMapper
     {
-        public static Model.User ToModel(this Core.Entities.User user)
+        public static Models.User ToModel(this Core.Entities.User user)
         {
             if (user != null)
             {
-                return new Model.User
+                return new Models.User
                 {
                     UserId = user.UserId,
                     Number = user.Number,

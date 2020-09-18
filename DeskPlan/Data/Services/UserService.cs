@@ -20,7 +20,7 @@ namespace DeskPlan.Data.Services
             _logger = logger;
         }
 
-        public async Task<List<Model.User>> GetAllUsers()
+        public async Task<List<Models.User>> GetAllUsers()
         {
             return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
                                                              .ToList();

@@ -1,5 +1,8 @@
 ﻿@page "/users"
 
+@using ElectronNET.API
+@using ElectronNET.API.Entities 
+
 @inject DeskPlan.Data.Services.UserService UserService
 @inject DeskPlan.Tools.UserImport _userImport
 
@@ -50,7 +53,7 @@ else
 }
 
 @code {
-    private List<Data.Model.User> users;
+    private List<DeskPlan.Data.Models.User> users;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,9 +80,17 @@ else
 
     private async void FileUpload(MouseEventArgs e)
     {
-        string file = @"C:\Users\tinus\Desktop\Mock_Users_Small.csv";
-        await _userImport.ImportAsync(file);
+        var mainWindow = Electron.WindowManager.BrowserWindows.First();
+        var options = new OpenDialogOptions
+        {
+            DefaultPath = "C:/",
+            Properties = new OpenDialogProperty[] { OpenDialogProperty.openFile }
+        };
+        var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow, options);
 
-        users = await UserService.GetAllUsers();
+        if (files.Length >= 1)
+        {
+            await _userImport.ImportAsync(files[0]);
+        }
     }
 }

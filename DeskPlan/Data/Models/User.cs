@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeskPlan.Data.Model
+namespace DeskPlan.Data.Models
 {
     public class User
     {
