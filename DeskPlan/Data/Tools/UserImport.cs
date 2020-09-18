@@ -6,6 +6,7 @@ using DeskPlan.Core.Repositories;
 using DeskPlan.Data.Services;
 using ElectronNET.API;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,32 +18,26 @@ namespace DeskPlan.Tools
 {
     public class UserImport
     {
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly UserService _userService;
 
-        public UserImport(IServiceScopeFactory scopeFactory)
+        public UserImport(UserService userService)
         {
-            _scopeFactory = scopeFactory;
+            _userService = userService;
         }
 
         public async Task ImportAsync(string file)
         {
-            using (var scope = _scopeFactory.CreateScope())
+            using var reader = new StreamReader(file);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            csv.Configuration.MissingFieldFound = null;
+            csv.Configuration.HeaderValidated = null;
+
+            var users = csv.GetRecordsAsync<User>();
+
+            await foreach (var user in users)
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<DeskPlanContext>();
-                var uService = new UserService(new UserRepository(dbContext));
-
-                using var reader = new StreamReader(file);
-                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-                csv.Configuration.MissingFieldFound = null;
-                csv.Configuration.HeaderValidated = null;
-
-                var users = csv.GetRecordsAsync<User>();
-
-                await foreach (var user in users)
-                {
-                    await uService.UpsertUserAsync(user);
-                }
-            }              
+                await _userService.UpsertUserAsync(user);
+            }
         }
     }
 }

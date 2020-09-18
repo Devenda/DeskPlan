@@ -38,7 +38,8 @@ namespace DeskPlan
 
             //DB Context
             services.AddDbContext<DeskPlanContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase")));
+                options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase"))
+                       .EnableSensitiveDataLogging(), ServiceLifetime.Transient);
 
             //Repositories
             services.AddScoped<IUserRepository, UserRepository>();
@@ -47,7 +48,7 @@ namespace DeskPlan
             services.AddScoped<UserService>();
 
             //Called from menu (no scope)
-            services.AddSingleton<UserImport>();
+            services.AddScoped<UserImport>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,7 +78,6 @@ namespace DeskPlan
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
 
             // Config menu
-            _userImport = userImport;
             StartElectron();
         }
 
@@ -103,7 +103,7 @@ namespace DeskPlan
                                     var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
                                     if (files.Length >= 1){
-                                        await _userImport.ImportAsync(files[0]);
+                                        //await _userImport.ImportAsync(files[0]);
                                     }
                                 }
                             }
