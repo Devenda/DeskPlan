@@ -6,7 +6,7 @@ using DeskPlan.Core.Entities;
 namespace DeskPlan.Core.Context
 {
     public partial class DeskPlanContext : DbContext
-    {    
+    {
         public virtual DbSet<Desk> Desk { get; set; }
         public virtual DbSet<Planning> Planning { get; set; }
         public virtual DbSet<Room> Room { get; set; }
@@ -31,7 +31,9 @@ namespace DeskPlan.Core.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-                        
+            modelBuilder.Entity<User>()
+                        .HasIndex(u => u.Number)
+                        .IsUnique();
         }
     }
 }

@@ -3,14 +3,16 @@ using System;
 using DeskPlan.Core.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DeskPlan.Core.Migrations
 {
     [DbContext(typeof(DeskPlanContext))]
-    partial class DeskPlanContextModelSnapshot : ModelSnapshot
+    [Migration("20200918085024_UniqueNumber")]
+    partial class UniqueNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -25,23 +25,9 @@ namespace DeskPlan.Core.Repositories
 
         public async Task UpsertUserAsync(User user)
         {
-            _dpContext.Set<User>().Attach(user);
-            _dpContext.Entry(user).State = user.UserId == 0 ? EntityState.Added : EntityState.Modified;
-
-            await _dpContext.SaveChangesAsync();
-
-            //var u = await _dpContext.User.Where(u => u.UserId == user.UserId)
-            //                             .FirstOrDefaultAsync();
-            //if (u == null)
-            //{
-            //    await _dpContext.User.AddAsync(user);
-            //}
-            //else
-            //{
-
-            //}
-
-            //await _dpContext.SaveChangesAsync();
+            await _dpContext.User.Upsert(user)
+                                 .On(u => u.Number)
+                                 .RunAsync();
         }
     }
 }
