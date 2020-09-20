@@ -7,10 +7,10 @@ namespace DeskPlan.Core.Context
 {
     public partial class DeskPlanContext : DbContext
     {
-        public virtual DbSet<Desk> Desk { get; set; }
-        public virtual DbSet<Planning> Planning { get; set; }
-        public virtual DbSet<Room> Room { get; set; }
-        public virtual DbSet<User> User { get; set; }
+        public DbSet<Desk> Desk => Set<Desk>();
+        public DbSet<Planning> Planning => Set<Planning>();
+        public DbSet<Room> Room => Set<Room>();
+        public DbSet<User> User => Set<User>();
 
         public DeskPlanContext()
         {

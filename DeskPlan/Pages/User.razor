@@ -40,20 +40,23 @@ else
         <tbody>
             @foreach (var user in users)
             {
-                <tr>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.EmailAddress</td>
-                    <td>@user.StartDate?.ToString("dd/MM/yyyy")</td>
-                    <td>@user.EndDate?.ToString("dd/MM/yyyy")</td>
-                </tr>
+                @if (user != null)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.EmailAddress</td>
+                        <td>@user.StartDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@user.EndDate?.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 }
 
 @code {
-    private List<DeskPlan.Data.Models.User> users;
+    private List<DeskPlan.Data.Models.User?> users = new List<DeskPlan.Data.Models.User?>();
 
     protected override async Task OnInitializedAsync()
     {

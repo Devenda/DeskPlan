@@ -8,7 +8,7 @@ namespace DeskPlan.Data.Mapper
 {
     public static class ModelMapper
     {
-        public static Models.User ToModel(this Core.Entities.User user)
+        public static Models.User? ToModel(this Core.Entities.User user)
         {
             if (user != null)
             {

@@ -9,9 +9,9 @@ namespace DeskPlan.Core.Entities
         [Key]
         public int UserId { get; set; }
 
-        public string Number { get; set; }
+        public string Number { get; set; } = null!;
 
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = null!;
 
         public string? LastName { get; set; }
 
@@ -22,6 +22,6 @@ namespace DeskPlan.Core.Entities
         public DateTime? EndDate { get; set; }
 
 
-        public List<Planning> Plannings { get; set; }
+        public List<Planning> Plannings { get; set; } = null!;
     }
 }

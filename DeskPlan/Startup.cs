@@ -26,8 +26,6 @@ namespace DeskPlan
         }
 
         public IConfiguration Configuration { get; }
-        public UserService _userService;
-        private UserImport _userImport;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -84,31 +82,31 @@ namespace DeskPlan
         private void StartElectron()
         {
             var menu = new MenuItem[] {
-                new MenuItem {
-                    Label = "File",
-                    Type=MenuType.submenu,
-                    Submenu = new MenuItem[]
-                    {
-                        new MenuItem
-                        {
-                            Label = "Import Users", Type=MenuType.normal, Click = async () =>
-                                {
-                                    var mainWindow = Electron.WindowManager.BrowserWindows.First();
-                                    var options = new OpenDialogOptions
-                                    {
-                                        DefaultPath= "C:/",
-                                        Properties = new OpenDialogProperty[] {OpenDialogProperty.openFile}
-                                    };
+                //new MenuItem {
+                //    Label = "File",
+                //    Type=MenuType.submenu,
+                //    Submenu = new MenuItem[]
+                //    {
+                //        new MenuItem
+                //        {
+                //            Label = "Import Users", Type=MenuType.normal, Click = async () =>
+                //                {
+                //                    var mainWindow = Electron.WindowManager.BrowserWindows.First();
+                //                    var options = new OpenDialogOptions
+                //                    {
+                //                        DefaultPath= "C:/",
+                //                        Properties = new OpenDialogProperty[] {OpenDialogProperty.openFile}
+                //                    };
 
-                                    var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
+                //                    var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
-                                    if (files.Length >= 1){
-                                        //await _userImport.ImportAsync(files[0]);
-                                    }
-                                }
-                            }
-                        }
-                },
+                //                    if (files.Length >= 1){
+                //                        //await _userImport.ImportAsync(files[0]);
+                //                    }
+                //                }
+                //            }
+                //        }
+                //},
                 new MenuItem {
                     Label = "View",
                     Type = MenuType.submenu,

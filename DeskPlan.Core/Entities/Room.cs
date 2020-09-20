@@ -9,7 +9,7 @@ namespace DeskPlan.Core.Entities
         [Key]
         public int RoomId { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public int MaxDesks { get; set; }
 

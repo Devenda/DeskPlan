@@ -9,7 +9,7 @@ namespace DeskPlan.Core.Entities
         [Key]
         public int DeskId { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public int RoomId { get; set; }
 
@@ -20,10 +20,10 @@ namespace DeskPlan.Core.Entities
         public bool Flex { get; set; }
 
 
-        public Room Room { get; set; }
+        public Room Room { get; set; } = null!;
 
-        public List<Planning> Plannings { get; set; }
+        public List<Planning> Plannings { get; set; } = null!;
 
 
-}
+    }
 }

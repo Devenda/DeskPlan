@@ -18,9 +18,9 @@ namespace DeskPlan.Core.Entities
         public int UserId { get; set; }
 
 
-        public Desk Desk { get; set; }
+        public Desk Desk { get; set; } = null!;
 
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
 
     }
