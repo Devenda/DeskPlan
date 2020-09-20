@@ -51,12 +51,5 @@ namespace DeskPlan.Core.Repositories
 
             await _dpContext.SaveChangesAsync();
         }
-
-        public void UpsertUser(User user)
-        {
-            _dpContext.User.Upsert(user)
-                           .On(u => u.Number)
-                           .Run();
-        }
     }
 }

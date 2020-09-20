@@ -1,0 +1,65 @@
+﻿@page "/rooms"
+
+@inject DeskPlan.Data.Services.RoomService _roomService
+
+<h3>Room</h3>
+
+<EditForm Model="@room" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="name" @bind-Value="room.Name" />
+    <InputNumber id="maxDesks" @bind-Value="room.MaxDesks" />
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@if (rooms == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Max Desks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in rooms)
+            {
+                @if (room != null)
+                {
+                    <tr>
+                        <td>@room.Name</td>
+                        <td>@room.MaxDesks</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Models.Room room = new Models.Room();
+
+    private List<Models.Room?> rooms = new List<Models.Room?>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetRooms();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await _roomService.InsertRoomAsync(room);
+        await GetRooms();
+    }
+
+    private async Task GetRooms()
+    {
+        rooms = await _roomService.GetAllRooms();
+    }
+}

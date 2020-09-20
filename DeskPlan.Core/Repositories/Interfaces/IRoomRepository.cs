@@ -1,13 +1,15 @@
 ﻿using DeskPlan.Core.Entities;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories.Interfaces
 {
-    public interface IUserRepository
+    public interface IRoomRepository
     {
-        Task<List<User>> GetAllUsersAsync();
+        Task<List<Room>> GetAllRoomsAsync();
 
-        Task UpsertUserAsync(User user);
+        Task InsertRoomAsync(Room room);
     }
 }

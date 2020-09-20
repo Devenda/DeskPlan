@@ -3,13 +3,10 @@
 @using ElectronNET.API
 @using ElectronNET.API.Entities 
 
-@inject DeskPlan.Data.Services.UserService UserService
+@inject DeskPlan.Data.Services.UserService _userService
 @inject DeskPlan.Tools.UserImport _userImport
 
 <h3>Users</h3>
-<button class="btn btn-primary" @onclick="UpdateRecord">
-    Update Record
-</button>
 
 <button class="btn btn-primary" @onclick="Refresh">
     Refresh
@@ -19,8 +16,6 @@
     Upload
 </button>
 
-@*<button onclick="document.getElementById('file-input').click();">Open</button>*@
-@*<input id="file-input" type="file" name="name" style="display: none;" @onchange="FileUpload" />*@
 @if (users == null)
 {
     <p><em>Loading...</em></p>
@@ -46,7 +41,7 @@ else
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.EmailAddress</td>
-                        <td>@user.StartDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@user.StartDate.ToString("dd/MM/yyyy")</td>
                         <td>@user.EndDate?.ToString("dd/MM/yyyy")</td>
                     </tr>
                 }
@@ -56,29 +51,16 @@ else
 }
 
 @code {
-    private List<DeskPlan.Data.Models.User?> users = new List<DeskPlan.Data.Models.User?>();
+    private List<Models.User?> users = new List<Models.User?>();
 
     protected override async Task OnInitializedAsync()
     {
-        users = await UserService.GetAllUsers();
-    }
-
-    private async void UpdateRecord(MouseEventArgs e)
-    {
-        await UserService.UpsertUserAsync(new Core.Entities.User
-        {
-            Number = "1",
-            FirstName = "Tinus",
-            LastName = "Scheppers",
-            EmailAddress = (new Random()).Next(999).ToString()
-        });
-
-        users = await UserService.GetAllUsers();
-    }
+        users = await _userService.GetAllUsers();
+    }   
 
     private async void Refresh(MouseEventArgs e)
     {
-        users = await UserService.GetAllUsers();
+        users = await _userService.GetAllUsers();
     }
 
     private async void FileUpload(MouseEventArgs e)

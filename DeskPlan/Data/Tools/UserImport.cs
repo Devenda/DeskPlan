@@ -1,8 +1,8 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using DeskPlan.Core.Context;
-using DeskPlan.Core.Entities;
 using DeskPlan.Core.Repositories;
+using Models = DeskPlan.Data.Models;
 using DeskPlan.Data.Services;
 using ElectronNET.API;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +32,7 @@ namespace DeskPlan.Tools
             csv.Configuration.MissingFieldFound = null;
             csv.Configuration.HeaderValidated = null;
 
-            var users = csv.GetRecordsAsync<User>();
+            var users = csv.GetRecordsAsync<Models.User>();
 
             await foreach (var user in users)
             {

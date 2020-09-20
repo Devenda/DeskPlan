@@ -26,25 +26,12 @@ namespace DeskPlan.Data.Services
                                                              .ToList();
         }
 
-        public async Task UpsertUserAsync(Entities.User user)
+        public async Task UpsertUserAsync(Models.User user)
         {
             _logger.LogInformation("Call UpsertUserAsync");
             try
             {
-                await _userRepository.UpsertUserAsync(user);
-            }
-            catch (System.Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public void UpsertUser(Entities.User user)
-        {
-            try
-            {
-                _userRepository.UpsertUser(user);
+                await _userRepository.UpsertUserAsync(user.ToEntity());
             }
             catch (System.Exception)
             {
