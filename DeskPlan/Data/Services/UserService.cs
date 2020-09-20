@@ -1,9 +1,10 @@
 ﻿using DeskPlan.Core.Repositories.Interfaces;
+using Entities = DeskPlan.Core.Entities;
 using DeskPlan.Data.Mapper;
-using DeskPlan.Data.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DeskPlan.Data.Services
 {
@@ -11,15 +12,45 @@ namespace DeskPlan.Data.Services
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository)
+        private readonly ILogger _logger;
+
+        public UserService(IUserRepository userRepository, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
+            _logger = logger;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<Models.User?>> GetAllUsers()
         {
-            return (await _userRepository.GetAllUsers()).Select(u => u.ToModel())
-                                                        .ToList();
+            return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
+                                                             .ToList();
+        }
+
+        public async Task UpsertUserAsync(Entities.User user)
+        {
+            _logger.LogInformation("Call UpsertUserAsync");
+            try
+            {
+                await _userRepository.UpsertUserAsync(user);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void UpsertUser(Entities.User user)
+        {
+            try
+            {
+                _userRepository.UpsertUser(user);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

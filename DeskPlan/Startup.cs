@@ -1,22 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DeskPlan.Core.Context;
+using DeskPlan.Core.Repositories;
+using DeskPlan.Core.Repositories.Interfaces;
+using DeskPlan.Data.Services;
+using DeskPlan.Tools;
+using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using DeskPlan.Data;
-using ElectronNET.API;
-using DeskPlan.Core.Context;
-using Microsoft.EntityFrameworkCore;
-using DeskPlan.Core.Repositories.Interfaces;
-using DeskPlan.Core.Repositories;
-using DeskPlan.Data.Services;
-using ElectronNET.API.Entities;
-using DeskPlan.Tools;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Entities = DeskPlan.Core.Entities;
 
 namespace DeskPlan
 {
@@ -38,17 +36,22 @@ namespace DeskPlan
 
             //DB Context
             services.AddDbContext<DeskPlanContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase")));
+                options.UseSqlite(Configuration.GetConnectionString("DeskPlanDatabase"))
+                       .EnableSensitiveDataLogging(), ServiceLifetime.Transient);
 
             //Repositories
             services.AddScoped<IUserRepository, UserRepository>();
 
             //Services
             services.AddScoped<UserService>();
+
+            //Called from menu (no scope)
+            services.AddScoped<UserImport>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserImport userImport)
         {
             if (env.IsDevelopment())
             {
@@ -72,38 +75,38 @@ namespace DeskPlan
             // Open the Electron-Window here
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
 
+            // Config menu
             StartElectron();
         }
 
-        private async void StartElectron()
+        private void StartElectron()
         {
             var menu = new MenuItem[] {
-                new MenuItem {
-                    Label = "File",
-                    Type=MenuType.submenu,
-                    Submenu = new MenuItem[]
-                    {
-                        new MenuItem
-                        {
-                            Label = "Import Users", Type=MenuType.normal, Click = async () =>
-                                {
-                                    var mainWindow = Electron.WindowManager.BrowserWindows.First();
-                                    var options = new OpenDialogOptions
-                                    {
-                                        DefaultPath= "C:/",
-                                        Properties = new OpenDialogProperty[] {OpenDialogProperty.openFile}
-                                    };
+                //new MenuItem {
+                //    Label = "File",
+                //    Type=MenuType.submenu,
+                //    Submenu = new MenuItem[]
+                //    {
+                //        new MenuItem
+                //        {
+                //            Label = "Import Users", Type=MenuType.normal, Click = async () =>
+                //                {
+                //                    var mainWindow = Electron.WindowManager.BrowserWindows.First();
+                //                    var options = new OpenDialogOptions
+                //                    {
+                //                        DefaultPath= "C:/",
+                //                        Properties = new OpenDialogProperty[] {OpenDialogProperty.openFile}
+                //                    };
 
-                                    var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
+                //                    var files = await Electron.Dialog.ShowOpenDialogAsync(mainWindow,options);
 
-                                    if (files.Length >= 1){
-                                        UserImport import = new UserImport();
-                                        import.Import(files[0]);
-                                    }
-                                }
-                            }
-                        }
-                },
+                //                    if (files.Length >= 1){
+                //                        //await _userImport.ImportAsync(files[0]);
+                //                    }
+                //                }
+                //            }
+                //        }
+                //},
                 new MenuItem {
                     Label = "View",
                     Type = MenuType.submenu,

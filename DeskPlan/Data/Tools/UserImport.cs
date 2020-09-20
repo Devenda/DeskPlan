@@ -1,6 +1,12 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
+using DeskPlan.Core.Context;
 using DeskPlan.Core.Entities;
+using DeskPlan.Core.Repositories;
+using DeskPlan.Data.Services;
 using ElectronNET.API;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,15 +18,25 @@ namespace DeskPlan.Tools
 {
     public class UserImport
     {
-        public async void Import(string file)
-        {
-            using (var reader = new StreamReader(file))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Configuration.MissingFieldFound = null;
-                csv.Configuration.HeaderValidated = null;
+        private readonly UserService _userService;
 
-                var records = csv.GetRecords<User>();
+        public UserImport(UserService userService)
+        {
+            _userService = userService;
+        }
+
+        public async Task ImportAsync(string file)
+        {
+            using var reader = new StreamReader(file);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            csv.Configuration.MissingFieldFound = null;
+            csv.Configuration.HeaderValidated = null;
+
+            var users = csv.GetRecordsAsync<User>();
+
+            await foreach (var user in users)
+            {
+                await _userService.UpsertUserAsync(user);
             }
         }
     }
