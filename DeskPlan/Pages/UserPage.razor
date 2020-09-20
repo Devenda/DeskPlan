@@ -55,12 +55,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        users = await _userService.GetAllUsers();
-    }   
+        await RefreshUsers();
+    }
 
     private async void Refresh(MouseEventArgs e)
     {
-        users = await _userService.GetAllUsers();
+        await RefreshUsers();
     }
 
     private async void FileUpload(MouseEventArgs e)
@@ -77,5 +77,13 @@ else
         {
             await _userImport.ImportAsync(files[0]);
         }
+
+        //TODO: This refresh does not seem to work
+        await RefreshUsers();
+    }
+
+    private async Task RefreshUsers()
+    {
+        users = await _userService.GetAllUsers();
     }
 }

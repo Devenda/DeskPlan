@@ -49,16 +49,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await GetRooms();
+        await RefreshRooms();
     }
 
     private async void HandleValidSubmit()
     {
         await _roomService.InsertRoomAsync(room);
-        await GetRooms();
+        await RefreshRooms();
     }
 
-    private async Task GetRooms()
+    private async Task RefreshRooms()
     {
         rooms = await _roomService.GetAllRooms();
     }
