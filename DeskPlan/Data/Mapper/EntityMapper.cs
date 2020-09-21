@@ -28,6 +28,7 @@ namespace DeskPlan.Data.Mapper
         {
             return new Entities.Room
             {
+                RoomId = room.RoomId,
                 Name = room.Name,
                 MaxDesks = room.MaxDesks
             };

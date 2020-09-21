@@ -36,6 +36,7 @@ namespace DeskPlan.Data.Mapper
             {
                 return new Models.Room
                 {
+                    RoomId = room.RoomId,
                     Name = room.Name,
                     MaxDesks = room.MaxDesks
                 };

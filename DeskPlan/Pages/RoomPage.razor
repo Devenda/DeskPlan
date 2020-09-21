@@ -4,20 +4,44 @@
 
 <h3>Room</h3>
 
-<EditForm Model="@room" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<button class="btn btn-primary" @onclick="Add">
+    Add
+</button>
 
-    <div class="form-group">
-        <label for="Name">Name</label>
-        <InputText @bind-Value=room.Name class="form-control" id="Name" />
-    </div>
-    <div class="form-group">
-        <label for="Age">Number of desks</label>
-        <InputNumber @bind-Value=room.MaxDesks class="form-control" id="MaxDesks" />
-    </div>
-    <input type="submit" class="btn btn-primary" value="Save" />
-</EditForm>
+@if (add)
+{
+    <EditForm Model="@room" OnValidSubmit="@HandleValidSubmit">
+        <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title"> Add Room </h3>
+                        <button type="button" class="close" @onclick="Close"> X </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label for="Name">Name</label>
+                            <InputText @bind-Value=room.Name class="form-control" id="Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Age">Number of desks</label>
+                            <InputNumber @bind-Value=room.MaxDesks class="form-control" id="MaxDesks" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Save" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    </EditForm>
+}
+
 
 @if (rooms == null)
 {
@@ -37,10 +61,14 @@ else
             {
                 @if (room != null)
                 {
-                    <tr>
-                        <td>@room.Name</td>
-                        <td>@room.MaxDesks</td>
-                    </tr>
+            <tr>
+                <td>@room.Name</td>
+                <td>@room.MaxDesks</td>
+                <td>
+                    <button class="btn btn-default" @onclick="@(async () => await EditRoom(@room.RoomId))">Edit</button>
+                    <button class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
                 }
             }
         </tbody>
@@ -52,6 +80,8 @@ else
 
     private List<Models.Room?> rooms = new List<Models.Room?>();
 
+    private bool add = false;
+
     protected override async Task OnInitializedAsync()
     {
         await RefreshRooms();
@@ -60,11 +90,27 @@ else
     private async void HandleValidSubmit()
     {
         await _roomService.InsertRoomAsync(room);
+        add = false;
         await RefreshRooms();
     }
 
     private async Task RefreshRooms()
     {
         rooms = await _roomService.GetAllRooms();
+    }
+
+    protected async Task EditRoom(int roomId)
+    {
+        await _roomService.InsertRoomAsync(rooms.Where(r => r.RoomId == roomId).FirstOrDefault());
+    }
+
+    private void Add()
+    {
+        add = true;
+    }
+
+    private void Close()
+    {
+        add = false;
     }
 }
