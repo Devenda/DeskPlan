@@ -8,15 +8,17 @@
     Add
 </button>
 
-@if (add)
+@if (isAdd || isEdit)
 {
     <EditForm Model="@room" OnValidSubmit="@HandleValidSubmit">
         <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title"> Add Room </h3>
-                        <button type="button" class="close" @onclick="Close"> X </button>
+                        <h5 class="modal-title">Add Room</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
 
                     <div class="modal-body">
@@ -42,6 +44,32 @@
     </EditForm>
 }
 
+@if (isDelete)
+{
+    <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Room?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Delete Room @room?.Name?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteRoom(@room.RoomId, true))"/>
+                    <input type="submit" class="btn btn-primary" value="Cancel" @onclick="Close" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
 
 @if (rooms == null)
 {
@@ -54,6 +82,7 @@ else
             <tr>
                 <th>Name</th>
                 <th>Max Desks</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -61,14 +90,14 @@ else
             {
                 @if (room != null)
                 {
-            <tr>
-                <td>@room.Name</td>
-                <td>@room.MaxDesks</td>
-                <td>
-                    <button class="btn btn-default" @onclick="@(async () => await EditRoom(@room.RoomId))">Edit</button>
-                    <button class="btn btn-danger">Delete</button>
-                </td>
-            </tr>
+                    <tr>
+                        <td>@room.Name</td>
+                        <td>@room.MaxDesks</td>
+                        <td>
+                            <button class="btn btn-default" @onclick="@(async () => await EditRoom(@room.RoomId))">Edit</button>
+                            <button class="btn btn-danger" @onclick="@(async () => await DeleteRoom(@room.RoomId, false))">Delete</button>
+                        </td>
+                    </tr>
                 }
             }
         </tbody>
@@ -76,11 +105,13 @@ else
 }
 
 @code {
-    private Models.Room room = new Models.Room();
+    private Models.Room? room = new Models.Room();
 
     private List<Models.Room?> rooms = new List<Models.Room?>();
 
-    private bool add = false;
+    private bool isAdd = false;
+    private bool isEdit = false;
+    private bool isDelete = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,8 +120,13 @@ else
 
     private async void HandleValidSubmit()
     {
-        await _roomService.InsertRoomAsync(room);
-        add = false;
+        if (room != null)
+        {
+            if (isAdd) await _roomService.InsertRoomAsync(room);
+            if (isEdit) await _roomService.UpdateRoomAsync(room);
+        }
+
+        isEdit = false;
         await RefreshRooms();
     }
 
@@ -101,16 +137,31 @@ else
 
     protected async Task EditRoom(int roomId)
     {
-        await _roomService.InsertRoomAsync(rooms.Where(r => r.RoomId == roomId).FirstOrDefault());
+        room = await _roomService.GetByIdAsync(roomId);
+
+        isEdit = true;
+    }
+
+    protected async Task DeleteRoom(int roomId, bool confirmed)
+    {
+        room = await _roomService.GetByIdAsync(roomId);
+
+        if (!confirmed) isDelete = true;
+        else isDelete = false;
+
+        if (room != null && confirmed) await _roomService.DeleteRoomAsync(room);
+
+        await RefreshRooms();
     }
 
     private void Add()
     {
-        add = true;
+        isAdd = true;
     }
 
     private void Close()
     {
-        add = false;
+        isAdd = false;
+        isEdit = false;
     }
 }

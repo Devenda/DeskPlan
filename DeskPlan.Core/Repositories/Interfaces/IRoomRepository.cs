@@ -8,8 +8,14 @@ namespace DeskPlan.Core.Repositories.Interfaces
 {
     public interface IRoomRepository
     {
+        Task<Room> GetByIdAsync(int id);
+
         Task<List<Room>> GetAllRoomsAsync();
 
         Task InsertRoomAsync(Room room);
+
+        Task UpdateRoomAsync(Room room);
+
+        Task DeleteRoomAsync(Room room);
     }
 }
