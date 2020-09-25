@@ -42,10 +42,12 @@ namespace DeskPlan
             //Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IDeskRepository, DeskRepository>();
 
             //Services
             services.AddScoped<UserService>();
             services.AddScoped<RoomService>();
+            services.AddScoped<DeskService>();
 
             //Called from menu (no scope)
             services.AddScoped<UserImport>();

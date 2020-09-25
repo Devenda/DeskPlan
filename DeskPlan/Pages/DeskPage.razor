@@ -1,21 +1,22 @@
-﻿@page "/rooms"
+﻿@page "/desks"
 
 @using Components
 
-@inject DeskPlan.Data.Services.RoomService _roomService
+@inject DeskPlan.Data.Services.DeskService _deskService
+@inject DeskPlan.Data.Services.RoomService _RoomService
 
 <div>
-    <h3>Rooms</h3>    
+    <h3>Desks</h3>
 </div>
 
 @if (isAdd || isEdit)
 {
-    <EditForm Model="@room" OnValidSubmit="@AddRoom">
+    <EditForm Model="@desk" OnValidSubmit="@AddDesk">
         <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add Room</h5>
+                        <h5 class="modal-title">Add Desk</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -26,11 +27,23 @@
                         <ValidationSummary />
                         <div class="form-group">
                             <label>Name</label>
-                            <InputText @bind-Value=room.Name class="form-control" id="Name" /> 
+                            <InputText @bind-Value=desk.Name class="form-control" id="Name" />
                         </div>
                         <div class="form-group">
-                            <label>Number of desks</label>
-                            <InputText @bind-Value=room.MaxDesks class="form-control" id="MaxDesks" />
+                            <label>Flex Desk?</label>
+                            <InputCheckbox @bind-Value=desk.Flex class="form-control" id="Flex" />
+                        </div>
+                        <div class="form-group">
+                            <label>Room</label>
+                            <select @bind=desk.RoomId class="form-control" id="Room">
+                                @if (rooms != null)
+                                {
+                                    foreach (Models.Room room in rooms)
+                                    {
+                                        <option value="@room.RoomId">@room.Name</option>
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
 
@@ -50,18 +63,18 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Room?</h5>
+                    <h5 class="modal-title">Delete Desk?</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
                 <div class="modal-body">
-                    <p>Delete Room "@room?.Name"?</p>
+                    <p>Delete Desk "@desk?.Name"?</p>
                 </div>
 
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteRoom(@room.RoomId, true))" />
+                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteDesk(@desk.DeskId, true))" />
                     <input type="submit" class="btn btn-primary" value="Cancel" @onclick="CloseModal" />
                 </div>
             </div>
@@ -71,7 +84,7 @@
 }
 
 
-@if (rooms == null)
+@if (desks == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -81,8 +94,9 @@ else
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Max Desks</th>
-                <th>                    
+                <th>Flex?</th>
+                <th>Room</th>
+                <th>
                     <span class="pl-2">Edit</span>
                     <button class="btn pb-0 pt-0" @onclick="Add">
                         <span class="oi oi-plus" aria-hidden="true"></span>
@@ -91,18 +105,26 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var room in rooms)
+            @foreach (var desk in desks)
             {
-                @if (room != null)
+                @if (desk != null)
                 {
                     <tr>
-                        <td>@room.Name</td>
-                        <td>@room.MaxDesks</td>
+                        <td>@desk.Name</td>
+                        @if (desk.Flex)
+                        {
+                            <td>Yes</td>
+                        }
+                        else
+                        {
+                            <td>No</td>
+                        }
+                        <td>@desk.Room.Name</td>
                         <td>
-                            <button class="btn pb-0 pt-0" @onclick="@(async () => await EditRoom(@room.RoomId))">
+                            <button class="btn pb-0 pt-0" @onclick="@(async () => await EditDesk(@desk.DeskId))">
                                 <span class="oi oi-pencil" aria-hidden="true"></span>
                             </button>
-                            <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteRoom(@room.RoomId, false))">
+                            <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteDesk(@desk.DeskId, false))">
                                 <span class="oi oi-circle-x" aria-hidden="true"></span>
                             </button>
                         </td>
@@ -115,8 +137,9 @@ else
 
 @code {
     //Model
-    private Models.Room? room = new Models.Room();
-    private List<Models.Room?> rooms = new List<Models.Room?>();
+    private Models.Desk? desk = new Models.Desk();
+    private List<Models.Desk?> desks = new List<Models.Desk?>();
+    private List<Models.Room> rooms = new List<Models.Room>();
 
     //Control
     private bool isAdd = false;
@@ -128,10 +151,10 @@ else
     protected IErrorComponent ErrorComponent { get; set; } = null!;
 
     #region UI Control
-    private void Add()
+    private async void Add()
     {
-        room = new Models.Room();
-        room.MaxDesks = 1.ToString();
+        desk = new Models.Desk();
+        rooms = await GetRooms();
 
         isAdd = true;
     }
@@ -147,28 +170,33 @@ else
     #region display
     protected override async Task OnInitializedAsync()
     {
-        await RefreshRooms();
+        await RefreshDesks();
     }
 
-    private async Task RefreshRooms()
+    private async Task RefreshDesks()
     {
-        rooms = await _roomService.GetAllRooms();
+        desks = await _deskService.GetAllDesksAsync();
     }
     #endregion
 
     #region CRUD
-    private async void AddRoom()
+    private async void AddDesk()
     {
         try
         {
-            if (room != null)
+            if (desk != null)
             {
-                if (isAdd) await _roomService.InsertRoomAsync(room);
-                if (isEdit) await _roomService.UpdateRoomAsync(room);
+                //if (desk.Room == null)
+                //{
+                //    desk.Room = await _RoomService.GetByIdAsync(desk.RoomId);
+                //}
+
+                if (isAdd) await _deskService.InsertDeskAsync(desk);
+                if (isEdit) await _deskService.UpdateDeskAsync(desk);
             }
 
             isEdit = isAdd = false;
-            await RefreshRooms();
+            await RefreshDesks();
         }
         catch (Exception e)
         {
@@ -177,11 +205,12 @@ else
         }
     }
 
-    protected async Task EditRoom(int roomId)
+    protected async Task EditDesk(int deskId)
     {
         try
         {
-            room = await _roomService.GetByIdAsync(roomId);
+            desk = await _deskService.GetByIdAsync(deskId);
+            rooms = await GetRooms();
 
             isEdit = true;
         }
@@ -192,18 +221,18 @@ else
         }
     }
 
-    protected async Task DeleteRoom(int roomId, bool confirmed)
+    protected async Task DeleteDesk(int deskId, bool confirmed)
     {
         try
         {
-            room = await _roomService.GetByIdAsync(roomId);
+            desk = await _deskService.GetByIdAsync(deskId);
 
             if (!confirmed) isDelete = true;
             else isDelete = false;
 
-            if (room != null && confirmed) await _roomService.DeleteRoomAsync(room);
+            if (desk != null && confirmed) await _deskService.DeleteDeskAsync(desk);
 
-            await RefreshRooms();
+            await RefreshDesks();
         }
         catch (Exception e)
         {
@@ -212,4 +241,9 @@ else
         }
     }
     #endregion
+
+    private async Task<List<Models.Room>> GetRooms()
+    {
+        return await _RoomService.GetAllRooms();
+    }
 }

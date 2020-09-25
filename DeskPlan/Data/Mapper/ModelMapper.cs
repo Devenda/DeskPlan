@@ -44,5 +44,25 @@ namespace DeskPlan.Data.Mapper
 
             return null;
         }
+
+        // Desk
+        public static Models.Desk? ToModel(this Entities.Desk desk)
+        {
+            if (desk != null)
+            {
+                return new Models.Desk
+                {
+                    DeskId = desk.DeskId,
+                    Name = desk.Name,
+                    Flex = desk.Flex,
+                    LocationX = desk.LocationX,
+                    LocationY = desk.LocationY,
+                    RoomId = desk.RoomId,
+                    Room = desk.Room.ToModel()
+                };
+            }
+
+            return null;
+        }
     }
 }

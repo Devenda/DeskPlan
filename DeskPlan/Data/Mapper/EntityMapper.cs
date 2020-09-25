@@ -34,5 +34,19 @@ namespace DeskPlan.Data.Mapper
                 MaxDesks = int.Parse(room.MaxDesks)
             };
         }
+
+        // Desk
+        public static Entities.Desk ToEntity(this Models.Desk desk)
+        {
+            return new Entities.Desk
+            {
+                DeskId = desk.DeskId,
+                Name = desk.Name,
+                Flex = desk.Flex,
+                LocationX = desk.LocationX,
+                LocationY = desk.LocationY,
+                RoomId = desk.RoomId
+            };
+        }
     }
 }
