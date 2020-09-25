@@ -19,11 +19,56 @@ namespace DeskPlan.Data.Services
             _userRepository = userRepository;
             _logger = logger;
         }
+        public async Task<Models.User?> GetByIdAsync(int id)
+        {
+            return (await _userRepository.GetByIdAsync(id)).ToModel();
+        }
 
         public async Task<List<Models.User?>> GetAllUsers()
         {
             return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
                                                              .ToList();
+        }
+
+        public async Task InsertUserAsync(Models.User user)
+        {
+            try
+            {
+                // TODO: check Number, use custom validator?
+                await _userRepository.InsertUserAsync(user.ToEntity());
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task UpdateUserAsync(Models.User user)
+        {
+            try
+            {
+                await _userRepository.UpdateUserAsync(user.ToEntity());
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task DeleteUserAsync(Models.User user)
+        {
+            try
+            {
+                //TODO: Check for desks
+                await _userRepository.DeleteUserAsync(user.ToEntity());
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task UpsertUserAsync(Models.User user)

@@ -30,7 +30,7 @@
                         </div>
                         <div class="form-group">
                             <label>Number of desks</label>
-                            <InputText @bind-Value=room.MaxDesks class="form-control" id="MaxDesks"> 1 </InputText>
+                            <InputText @bind-Value=room.MaxDesks class="form-control" id="MaxDesks" />
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@ else
                 <th>Max Desks</th>
                 <th>                    
                     <span class="pl-2">Edit</span>
-                    <button class="btn" @onclick="Add">
+                    <button class="btn pb-0 pt-0" @onclick="Add">
                         <span class="oi oi-plus" aria-hidden="true"></span>
                     </button>
                 </th>
@@ -132,6 +132,9 @@ else
     #region UI Control
     private void Add()
     {
+        room = new Models.Room();
+        room.MaxDesks = 1.ToString();
+
         isAdd = true;
     }
 
@@ -178,22 +181,37 @@ else
 
     protected async Task EditRoom(int roomId)
     {
-        room = await _roomService.GetByIdAsync(roomId);
+        try
+        {
+            room = await _roomService.GetByIdAsync(roomId);
 
-        isEdit = true;
+            isEdit = true;
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
     }
 
     protected async Task DeleteRoom(int roomId, bool confirmed)
     {
-        room = await _roomService.GetByIdAsync(roomId);
+        try
+        {
+            room = await _roomService.GetByIdAsync(roomId);
 
-        if (!confirmed) isDelete = true;
-        else isDelete = false;
+            if (!confirmed) isDelete = true;
+            else isDelete = false;
 
-        if (room != null && confirmed) await _roomService.DeleteRoomAsync(room);
+            if (room != null && confirmed) await _roomService.DeleteRoomAsync(room);
 
-        await RefreshRooms();
+            await RefreshRooms();
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
     }
-
     #endregion
 }

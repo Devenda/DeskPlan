@@ -1,20 +1,100 @@
 ﻿@page "/users"
 
+@using Components
+
 @using ElectronNET.API
-@using ElectronNET.API.Entities 
+@using ElectronNET.API.Entities
 
 @inject DeskPlan.Data.Services.UserService _userService
 @inject DeskPlan.Tools.UserImport _userImport
 
 <h3>Users</h3>
 
-<button class="btn btn-primary" @onclick="Refresh">
+<button class="btn btn-primary" @onclick="RefreshUsers">
     Refresh
 </button>
 
 <button class="btn btn-primary" @onclick="FileUpload">
     Upload
 </button>
+
+@if (isAdd || isEdit)
+{
+    <EditForm Model="@user" OnValidSubmit="@AddUser">
+        <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label>Number</label>
+                            <InputText @bind-Value=user.Number class="form-control" id="Number" />
+                        </div>
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <InputText @bind-Value=user.FirstName class="form-control" id="FirstName" />
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <InputText @bind-Value=user.LastName class="form-control" id="LastName" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <InputText @bind-Value=user.EmailAddress class="form-control" id="EmailAddress" />
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <InputDate @bind-Value=user.StartDate class="form-control" id="StartDate" />
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <InputDate @bind-Value=user.EndDate class="form-control" id="EndDate" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Save" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    </EditForm>
+}
+
+@if (isDelete)
+{
+    <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete User?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Delete User "@user?.FirstName @user?.LastName"?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteUser(@user.UserId, true))" />
+                    <input type="submit" class="btn btn-primary" value="Cancel" @onclick="CloseModal" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
 
 @if (users == null)
 {
@@ -30,6 +110,12 @@ else
                 <th>Email</th>
                 <th>Started</th>
                 <th>Contract end</th>
+                <th>
+                    <span class="pl-2">Edit</span>
+                    <button class="btn pb-0 pt-0" @onclick="Add">
+                        <span class="oi oi-plus" aria-hidden="true"></span>
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +129,14 @@ else
                         <td>@user.EmailAddress</td>
                         <td>@user.StartDate.ToString("dd/MM/yyyy")</td>
                         <td>@user.EndDate?.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <button class="btn pb-0 pt-0" @onclick="@(async () => await EditUser(@user.UserId))">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteUser(@user.UserId, false))">
+                                <span class="oi oi-circle-x" aria-hidden="true"></span>
+                            </button>
+                        </td>
                     </tr>
                 }
             }
@@ -51,17 +145,53 @@ else
 }
 
 @code {
+    //Model
+    private Models.User? user = new Models.User();
     private List<Models.User?> users = new List<Models.User?>();
 
+
+    //Control
+    private bool isAdd = false;
+    private bool isEdit = false;
+    private bool isDelete = false;
+
+    //Error handling
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; } = null!;
+
+    #region UI Control
+    private void Add()
+    {
+        user = new Models.User();
+        user.StartDate = DateTime.Now;
+
+        isAdd = true;
+    }
+
+    private void CloseModal()
+    {
+        isAdd = false;
+        isEdit = false;
+        isDelete = false;
+    }
+    #endregion
+
+    #region display
     protected override async Task OnInitializedAsync()
     {
         await RefreshUsers();
     }
 
-    private async void Refresh(MouseEventArgs e)
+    private async void RefreshUsers(MouseEventArgs e)
     {
         await RefreshUsers();
     }
+
+    private async Task RefreshUsers()
+    {
+        users = await _userService.GetAllUsers();
+    }
+    #endregion
 
     private async void FileUpload(MouseEventArgs e)
     {
@@ -82,8 +212,60 @@ else
         await RefreshUsers();
     }
 
-    private async Task RefreshUsers()
+    #region CRUD
+    private async void AddUser()
     {
-        users = await _userService.GetAllUsers();
+        try
+        {
+            if (user != null)
+            {
+                if (isAdd) await _userService.InsertUserAsync(user);
+                if (isEdit) await _userService.UpdateUserAsync(user);
+            }
+
+            isEdit = isAdd = false;
+            await RefreshUsers();
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
     }
+
+    protected async Task EditUser(int userId)
+    {
+        try
+        {
+            user = await _userService.GetByIdAsync(userId);
+
+            isEdit = true;
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
+    }
+
+    protected async Task DeleteUser(int userId, bool confirmed)
+    {
+        try
+        {
+            user = await _userService.GetByIdAsync(userId);
+
+            if (!confirmed) isDelete = true;
+            else isDelete = false;
+
+            if (user != null && confirmed) await _userService.DeleteUserAsync(user);
+
+            await RefreshUsers();
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
+    }
+    #endregion
 }

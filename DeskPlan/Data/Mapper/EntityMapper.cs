@@ -14,6 +14,7 @@ namespace DeskPlan.Data.Mapper
         {
             return new Entities.User
             {
+                UserId = user.UserId,
                 Number = user.Number,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
