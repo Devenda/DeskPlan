@@ -30,7 +30,7 @@ namespace DeskPlan.Data.Mapper
             {
                 RoomId = room.RoomId,
                 Name = room.Name,
-                MaxDesks = room.MaxDesks
+                MaxDesks = int.Parse(room.MaxDesks)
             };
         }
     }

@@ -13,8 +13,9 @@ namespace DeskPlan.Data.Models
         [Required]
         public string Name { get; set; } = null!;
 
+        [Required]
         [Range(1, 100)]
-        public int MaxDesks { get; set; }
+        public string MaxDesks { get; set; } = null!;
 
         public List<Desk?> Desks { get; set; } = null!;
     }
