@@ -1,5 +1,7 @@
 ﻿@page "/rooms"
 
+@using Components
+
 @inject DeskPlan.Data.Services.RoomService _roomService
 
 <h3>Room</h3>
@@ -10,13 +12,13 @@
 
 @if (isAdd || isEdit)
 {
-    <EditForm Model="@room" OnValidSubmit="@HandleValidSubmit">
+    <EditForm Model="@room" OnValidSubmit="@AddRoom">
         <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Add Room</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -51,7 +53,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Delete Room?</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -61,8 +63,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteRoom(@room.RoomId, true))"/>
-                    <input type="submit" class="btn btn-primary" value="Cancel" @onclick="Close" />
+                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteRoom(@room.RoomId, true))" />
+                    <input type="submit" class="btn btn-primary" value="Cancel" @onclick="CloseModal" />
                 </div>
             </div>
         </div>
@@ -105,34 +107,63 @@ else
 }
 
 @code {
+    //Model
     private Models.Room? room = new Models.Room();
-
     private List<Models.Room?> rooms = new List<Models.Room?>();
 
+    //Control
     private bool isAdd = false;
     private bool isEdit = false;
     private bool isDelete = false;
 
-    protected override async Task OnInitializedAsync()
+    //Error handling
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; } = null!;
+
+    #region UI Control
+    private void Add()
     {
-        await RefreshRooms();
+        isAdd = true;
     }
 
-    private async void HandleValidSubmit()
+    private void CloseModal()
     {
-        if (room != null)
-        {
-            if (isAdd) await _roomService.InsertRoomAsync(room);
-            if (isEdit) await _roomService.UpdateRoomAsync(room);
-        }
-
+        isAdd = false;
         isEdit = false;
+    }
+    #endregion
+
+    #region display
+    protected override async Task OnInitializedAsync()
+    {
         await RefreshRooms();
     }
 
     private async Task RefreshRooms()
     {
         rooms = await _roomService.GetAllRooms();
+    }
+    #endregion
+
+    #region CRUD
+    private async void AddRoom()
+    {
+        try
+        {
+            if (room != null)
+            {
+                if (isAdd) await _roomService.InsertRoomAsync(room);
+                if (isEdit) await _roomService.UpdateRoomAsync(room);
+            }
+
+            isEdit = isAdd = false;
+            await RefreshRooms();
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
     }
 
     protected async Task EditRoom(int roomId)
@@ -154,14 +185,5 @@ else
         await RefreshRooms();
     }
 
-    private void Add()
-    {
-        isAdd = true;
-    }
-
-    private void Close()
-    {
-        isAdd = false;
-        isEdit = false;
-    }
+    #endregion
 }
