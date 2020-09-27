@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskPlan.Core.Entities
+namespace DeskPlan.Data.Models
 {
-    public partial class Planning
+    public class Planning
     {
-        [Key]
         public int PlanningId { get; set; }
 
+        [Required]
         public int DeskId { get; set; }
 
+        [Required]
         public int UserId { get; set; }
 
+        [Required]
         public DateTime StartDate { get; set; }
 
+        [Required]
         public DateTime EndDate { get; set; }
 
 

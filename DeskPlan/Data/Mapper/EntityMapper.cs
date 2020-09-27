@@ -48,5 +48,18 @@ namespace DeskPlan.Data.Mapper
                 RoomId = desk.RoomId
             };
         }
+
+        // Planning
+        public static Entities.Planning ToEntity(this Models.Planning planning)
+        {
+            return new Entities.Planning
+            {
+                PlanningId = planning.PlanningId,
+                DeskId = planning.DeskId,
+                UserId = planning.UserId,
+                StartDate = planning.StartDate,
+                EndDate = planning.EndDate
+            };
+        }
     }
 }

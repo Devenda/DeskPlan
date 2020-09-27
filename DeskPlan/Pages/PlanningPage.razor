@@ -1,0 +1,120 @@
+﻿@page "/planning"
+
+@using Components
+
+@inject DeskPlan.Data.Services.PlanningService _planningService
+@inject DeskPlan.Data.Services.RoomService _RoomService
+@inject DeskPlan.Data.Services.DeskService _deskService
+@inject DeskPlan.Data.Services.UserService _userService
+
+<h3>Planning</h3>
+
+<EditForm Model="@planning" OnValidSubmit="@AddPlanning">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Room</label>
+        <select @bind=roomId class="form-control" id="Room">
+            @if (rooms != null)
+            {
+                foreach (Models.Room room in rooms)
+                {
+                    <option value="@room.RoomId">@room.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Desk</label>
+        <select @bind=planning.DeskId class="form-control" id="Desk">
+            @if (desks != null)
+            {
+                foreach (Models.Desk desk in desks)
+                {
+                    <option value="@desk.DeskId">@desk.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>User</label>
+        <select @bind=planning.UserId class="form-control" id="User">
+            @if (users != null)
+            {
+                foreach (Models.User user in users)
+                {
+                    <option value="@user.UserId">@(user.FirstName + " " + user.LastName) </option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Start Week</label>
+        <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
+    </div>
+    <div class="form-group">
+        <label>End Week</label>
+        <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Save" />
+</EditForm>
+
+@code {
+    //Model
+    private int roomId;
+    private Models.Planning? planning = new Models.Planning();
+    private List<Models.Planning?> plannings = new List<Models.Planning?>();
+
+    private List<Models.Room> rooms = new List<Models.Room>();
+    private List<Models.Desk> desks = new List<Models.Desk>();
+    private List<Models.User> users = new List<Models.User>();
+
+    //Error handling
+    [CascadingParameter(Name = "ErrorComponent")]
+    protected IErrorComponent ErrorComponent { get; set; } = null!;
+
+    #region display
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshPlannings();
+        await RefreshRooms();
+        await RefreshDesks();
+        await RefreshUsers();
+    }
+
+    private async Task RefreshPlannings()
+    {
+        plannings = await _planningService.GetAllPlanningsAsync();
+    }
+
+    private async Task RefreshRooms()
+    {
+        rooms = await _RoomService.GetAllRooms();
+    }
+
+    private async Task RefreshDesks()
+    {
+        desks = await _deskService.GetAllDesksAsync();
+    }
+
+    private async Task RefreshUsers()
+    {
+        users = await _userService.GetAllUsersAsync();
+    }
+    #endregion
+
+    #region CRUD
+    private async void AddPlanning()
+    {
+        try
+        {
+
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
+    }
+    #endregion
+}

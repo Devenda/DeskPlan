@@ -64,5 +64,25 @@ namespace DeskPlan.Data.Mapper
 
             return null;
         }
+
+        // Planning
+        public static Models.Planning? ToModel(this Entities.Planning planning)
+        {
+            if (planning != null)
+            {
+                return new Models.Planning
+                {
+                    PlanningId = planning.PlanningId,
+                    DeskId = planning.DeskId,
+                    Desk = planning.Desk.ToModel(),
+                    UserId = planning.UserId,
+                    User = planning.User.ToModel(),
+                    StartDate = planning.StartDate,
+                    EndDate = planning.EndDate
+                };
+            }
+
+            return null;
+        }
     }
 }

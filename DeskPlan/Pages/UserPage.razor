@@ -189,7 +189,7 @@ else
 
     private async Task RefreshUsers()
     {
-        users = await _userService.GetAllUsers();
+        users = await _userService.GetAllUsersAsync();
     }
     #endregion
 

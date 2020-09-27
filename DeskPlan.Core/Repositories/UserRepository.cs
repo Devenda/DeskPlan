@@ -2,10 +2,8 @@
 using DeskPlan.Core.Entities;
 using DeskPlan.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories

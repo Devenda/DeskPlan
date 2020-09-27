@@ -24,7 +24,7 @@ namespace DeskPlan.Data.Services
             return (await _userRepository.GetByIdAsync(id)).ToModel();
         }
 
-        public async Task<List<Models.User?>> GetAllUsers()
+        public async Task<List<Models.User?>> GetAllUsersAsync()
         {
             return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
                                                              .ToList();

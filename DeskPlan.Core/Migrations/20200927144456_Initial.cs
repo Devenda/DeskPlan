@@ -68,10 +68,10 @@ namespace DeskPlan.Core.Migrations
                 {
                     PlanningId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Week = table.Column<int>(nullable: false),
-                    Year = table.Column<int>(nullable: false),
                     DeskId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeskPlan.Core.Migrations
 {
     [DbContext(typeof(DeskPlanContext))]
-    [Migration("20200918114121_Initial")]
+    [Migration("20200927144456_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,13 +56,13 @@ namespace DeskPlan.Core.Migrations
                     b.Property<int>("DeskId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Week")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("PlanningId");

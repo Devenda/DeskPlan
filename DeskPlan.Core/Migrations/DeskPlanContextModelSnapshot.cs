@@ -54,13 +54,13 @@ namespace DeskPlan.Core.Migrations
                     b.Property<int>("DeskId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Week")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("PlanningId");
