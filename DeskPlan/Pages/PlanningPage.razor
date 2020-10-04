@@ -2,6 +2,8 @@
 
 @using Components
 
+@inject IJSRuntime JsRuntime
+
 @inject DeskPlan.Data.Services.PlanningService _planningService
 @inject DeskPlan.Data.Services.RoomService _RoomService
 @inject DeskPlan.Data.Services.DeskService _deskService
@@ -59,6 +61,9 @@
 
     <input type="submit" class="btn btn-primary" value="Save" />
 </EditForm>
+
+<div id="planning"></div>
+   
 
 @code {
     //Model
@@ -128,6 +133,11 @@
     private async Task RefreshUsers()
     {
         users = await _userService.GetAllUsersAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeAsync<Task>("drawChart");
     }
     #endregion
 
