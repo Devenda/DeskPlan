@@ -12,13 +12,22 @@ namespace DeskPlan.Data.Models
 
         [Required]
         public int UserId { get; set; }
-
+        
+        private DateTime startDate;
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate
+        {
+            get { return startDate.Date; }
+            set { startDate = value.Date; }
+        }
 
+        private DateTime endDate;
         [Required]
-        public DateTime EndDate { get; set; }
-
+        public DateTime EndDate
+        {
+            get { return endDate.Date; }
+            set { endDate = value.Date; }
+        }
 
         public Desk Desk { get; set; } = null!;
 

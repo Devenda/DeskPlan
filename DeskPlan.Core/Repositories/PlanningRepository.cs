@@ -18,7 +18,9 @@ namespace DeskPlan.Core.Repositories
 
         public async Task<List<Planning>> GetAllPlanningsAsync()
         {
-            return await _dpContext.Planning.ToListAsync();
+            return await _dpContext.Planning.Include(p => p.User)
+                                            .Include(p => p.Desk)
+                                            .ToListAsync();
         }
 
         public async Task<Planning> GetByIdAsync(int id)

@@ -62,8 +62,11 @@
     <input type="submit" class="btn btn-primary" value="Save" />
 </EditForm>
 
+<button class="btn btn-primary" @onclick="RefreshPlannings">
+    Refresh
+</button>
+
 <div id="planning"></div>
-   
 
 @code {
     //Model
@@ -118,6 +121,9 @@
     private async Task RefreshPlannings()
     {
         plannings = await _planningService.GetAllPlanningsAsync();
+
+        // Draw chart
+        await JsRuntime.InvokeAsync<Task>("drawChart", plannings);
     }
 
     private async Task RefreshRooms()
@@ -137,7 +143,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeAsync<Task>("drawChart");
+        await RefreshPlannings();
     }
     #endregion
 
