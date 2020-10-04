@@ -30,4 +30,10 @@
   <ItemGroup>
     <Folder Include="Data\Tools\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DeskPlan.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

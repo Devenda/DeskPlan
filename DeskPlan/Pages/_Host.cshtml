@@ -44,16 +44,18 @@
                 var chart = new google.visualization.Timeline(container);
                 var dataTable = new google.visualization.DataTable();
 
+                dataTable.addColumn({ type: 'string', id: 'Desk' });
                 dataTable.addColumn({ type: 'string', id: 'User' });
                 dataTable.addColumn({ type: 'date', id: 'From' });
                 dataTable.addColumn({ type: 'date', id: 'Till' });
 
                 for (var i = 0; i < data.length; i++) {
-                    var name = data[i].user.firstName;
+                    var desk = data[i].desk.name;
+                    var name = data[i].user.firstName + ' ' + data[i].user.lastName;
                     var start = new Date(data[i].startDate);
                     var end = new Date(data[i].endDate);
 
-                    dataTable.addRow([name, start, end]);
+                    dataTable.addRow([desk, name, start, end]);
                 }
 
                 var dt = dataTable;

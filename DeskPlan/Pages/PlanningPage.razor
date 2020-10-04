@@ -62,11 +62,7 @@
     <input type="submit" class="btn btn-primary" value="Save" />
 </EditForm>
 
-<button class="btn btn-primary" @onclick="RefreshPlannings">
-    Refresh
-</button>
-
-<div id="planning"></div>
+<div class="pt-4" id="planning"></div>
 
 @code {
     //Model
@@ -80,7 +76,10 @@
             roomId = value;
 
             RefreshDesks(roomId);
-            DeskId = desks.FirstOrDefault().DeskId;
+            if (desks != null)
+            {
+                DeskId = desks.FirstOrDefault().DeskId;
+            }
         }
     }
 
@@ -91,9 +90,6 @@
         get { return deskId; }
         set { deskId = value; }
     }
-
-    private bool showDesks;
-
 
     private Models.Planning? planning = new Models.Planning();
     private List<Models.Planning?> plannings = new List<Models.Planning?>();
@@ -109,13 +105,11 @@
     #region display
     protected override async Task OnInitializedAsync()
     {
-        await RefreshPlannings();
         await RefreshRooms();
         await RefreshUsers();
 
         planning.StartDate = DateTime.Now;
         planning.EndDate = DateTime.Now;
-
     }
 
     private async Task RefreshPlannings()
@@ -141,7 +135,7 @@
         users = await _userService.GetAllUsersAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool first)
     {
         await RefreshPlannings();
     }
@@ -153,6 +147,7 @@
         try
         {
             await _planningService.InsertPlanningAsync(planning);
+            await RefreshPlannings();
         }
         catch (Exception e)
         {
