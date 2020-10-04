@@ -12,6 +12,8 @@ namespace DeskPlan.Core.Repositories.Interfaces
 
         Task<List<Desk>> GetAllDesksAsync();
 
+        Task<List<Desk>> GetAllDesksForRoomAsync(int roomId);
+
         Task InsertDeskAsync(Desk desk);
 
         Task UpdateDeskAsync(Desk desk);

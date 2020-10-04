@@ -3,6 +3,7 @@ using DeskPlan.Core.Entities;
 using DeskPlan.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories
@@ -18,7 +19,14 @@ namespace DeskPlan.Core.Repositories
 
         public async Task<List<Desk>> GetAllDesksAsync()
         {
-            return await _dpContext.Desk.Include(d => d.Room).ToListAsync();
+            return await _dpContext.Desk.Include(d => d.Room)
+                                        .ToListAsync();
+        }
+
+        public async Task<List<Desk>> GetAllDesksForRoomAsync(int roomId)
+        {
+            return await _dpContext.Desk.Where(d => d.RoomId == roomId)
+                                        .ToListAsync();
         }
 
         public async Task<Desk> GetByIdAsync(int id)
