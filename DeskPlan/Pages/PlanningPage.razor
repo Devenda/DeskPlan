@@ -62,6 +62,7 @@
     <input type="submit" class="btn btn-primary" value="Save" />
 </EditForm>
 
+@* chart js code can be found in _Host.cshtml *@
 <div class="pt-4" id="planning"></div>
 
 @code {
@@ -98,6 +99,9 @@
     private List<Models.Desk> desks = new List<Models.Desk>();
     private List<Models.User> users = new List<Models.User>();
 
+    //Row selected helper
+    private static Action<int> rowSelectedAction;
+
     //Error handling
     [CascadingParameter(Name = "ErrorComponent")]
     protected IErrorComponent ErrorComponent { get; set; } = null!;
@@ -110,6 +114,8 @@
 
         planning.StartDate = DateTime.Now;
         planning.EndDate = DateTime.Now;
+
+        rowSelectedAction = RowSelected;
     }
 
     private async Task RefreshPlannings()
@@ -157,5 +163,15 @@
     #endregion
 
     #region event handlers
+    private void RowSelected(int row)
+    {
+        var r = row;
+    }
+
+    [JSInvokable]
+    public static void RowSelectedCaller(int row)
+    {
+        rowSelectedAction.Invoke(row);
+    }
     #endregion
 }

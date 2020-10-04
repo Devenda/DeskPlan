@@ -42,6 +42,13 @@
             function drawTimelineChart() {
                 var container = document.getElementById('planning');
                 var chart = new google.visualization.Timeline(container);
+
+                // Listen for select event
+                google.visualization.events.addListener(chart, 'select', function () {
+                    var selection = chart.getSelection();
+                    DotNet.invokeMethodAsync('DeskPlan', 'RowSelectedCaller', selection[0].row);
+                });
+
                 var dataTable = new google.visualization.DataTable();
 
                 dataTable.addColumn({ type: 'string', id: 'Desk' });
