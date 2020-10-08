@@ -21,12 +21,11 @@ namespace DeskPlan.Data.Models
             set { startDate = value.Date; }
         }
 
-        private DateTime endDate;
-        [Required]
-        public DateTime EndDate
+        private DateTime? endDate;
+        public DateTime? EndDate
         {
-            get { return endDate.Date; }
-            set { endDate = value.Date; }
+            get { return endDate?.Date; }
+            set { endDate = value?.Date; }
         }
 
         public Desk Desk { get; set; } = null!;

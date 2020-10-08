@@ -14,52 +14,86 @@
 <EditForm Model="@planning" OnValidSubmit="@AddPlanning">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
-        <label>Room</label>
-        <select @bind="RoomId" class="form-control" id="Room">
-            @if (rooms != null)
-            {
-                foreach (Models.Room room in rooms)
-                {
-                    <option value="@room.RoomId">@room.Name</option>
-                }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Desk</label>
-        <select @bind="planning.DeskId" class="form-control" id="Desk">
-            @if (desks != null)
-            {
-                foreach (Models.Desk desk in desks)
-                {
-                    <option value="@desk.DeskId">@desk.Name</option>
-                }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>User</label>
-        <select @bind=planning.UserId class="form-control" id="User">
-            @if (users != null)
-            {
-                foreach (Models.User user in users)
-                {
-                    <option value="@user.UserId">@(user.FirstName + " " + user.LastName) </option>
-                }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Start Week</label>
-        <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
-    </div>
-    <div class="form-group">
-        <label>End Week</label>
-        <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
-    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <label>Room & Desk</label>
+            </div>
 
-    <input type="submit" class="btn btn-primary" value="Save" />
+            <div class="col">
+                <label>User</label>
+            </div>
+
+            <div class="col">
+                <label>Start Week</label>
+            </div>
+
+            <div class="col">
+                <label>End Week</label>
+            </div>
+
+            <div class="col-1">
+                <label></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <select @bind="RoomId" class="form-control mb-2" id="Room">
+                        @if (rooms != null)
+                        {
+                            foreach (Models.Room room in rooms)
+                            {
+                                <option value="@room.RoomId">@room.Name</option>
+                            }
+                        }
+                    </select>
+                    <select @bind="planning.DeskId" class="form-control" id="Desk">
+                        @if (desks != null)
+                        {
+                            foreach (Models.Desk desk in desks)
+                            {
+                                <option value="@desk.DeskId">@desk.Name</option>
+                            }
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => planning.DeskId)" />
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <select @bind=planning.UserId class="form-control" id="User">
+                        @if (users != null)
+                        {
+                            foreach (Models.User user in users)
+                            {
+                                <option value="@user.UserId">@(user.FirstName + " " + user.LastName) </option>
+                            }
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => planning.UserId)" />
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
+                    <ValidationMessage For="@(() => planning.StartDate)" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
+                    <ValidationMessage For="@(() => planning.EndDate)" />
+                </div>
+            </div>
+
+            <div class="col-1">
+                <input type="submit" class="btn btn-primary" value="Save" />
+            </div>
+        </div>
+    </div>
 </EditForm>
 
 @* chart js code can be found in _Host.cshtml *@
@@ -77,7 +111,7 @@
             roomId = value;
 
             RefreshDesks(roomId);
-            if (desks != null)
+            if (desks != null && desks.Any())
             {
                 DeskId = desks.FirstOrDefault().DeskId;
             }
@@ -165,7 +199,7 @@
     #region event handlers
     private void RowSelected(int row)
     {
-        var r = row;
+        planning = plannings[row];
     }
 
     [JSInvokable]

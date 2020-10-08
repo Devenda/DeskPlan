@@ -24,15 +24,6 @@
 
                     <div class="modal-body">
                         <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="form-group">
-                            <label>Name</label>
-                            <InputText @bind-Value=desk.Name class="form-control" id="Name" />
-                        </div>
-                        <div class="form-group">
-                            <label>Flex Desk?</label>
-                            <InputCheckbox @bind-Value=desk.Flex class="form-control" id="Flex" />
-                        </div>
                         <div class="form-group">
                             <label>Room</label>
                             <select @bind=desk.RoomId class="form-control" id="Room">
@@ -44,6 +35,16 @@
                                     }
                                 }
                             </select>
+                            <ValidationMessage For="@(() => desk.RoomId)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <InputText @bind-Value=desk.Name class="form-control" id="Name" />
+                            <ValidationMessage For="@(() => desk.Name)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Flex Desk?</label>
+                            <InputCheckbox @bind-Value=desk.Flex class="form-control" id="Flex" />
                         </div>
                     </div>
 

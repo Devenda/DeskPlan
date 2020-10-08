@@ -23,14 +23,17 @@
 
                     <div class="modal-body">
                         <DataAnnotationsValidator />
-                        <ValidationSummary />
                         <div class="form-group">
                             <label>Name</label>
-                            <InputText @bind-Value=room.Name class="form-control" id="Name" /> 
+                            <InputText @bind-Value=room.Name class="form-control" id="Name" />
+                            <ValidationMessage For="@(() => room.Name)" />
+
                         </div>
                         <div class="form-group">
                             <label>Number of desks</label>
                             <InputText @bind-Value=room.MaxDesks class="form-control" id="MaxDesks" />
+                            <ValidationMessage For="@(() => room.MaxDesks)" />
+
                         </div>
                     </div>
 

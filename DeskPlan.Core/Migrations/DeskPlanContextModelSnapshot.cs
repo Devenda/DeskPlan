@@ -54,7 +54,7 @@ namespace DeskPlan.Core.Migrations
                     b.Property<int>("DeskId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")

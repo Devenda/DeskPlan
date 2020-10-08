@@ -71,7 +71,7 @@ namespace DeskPlan.Core.Migrations
                     DeskId = table.Column<int>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
-                    EndDate = table.Column<DateTime>(nullable: false)
+                    EndDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
