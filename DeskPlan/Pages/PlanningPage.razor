@@ -14,19 +14,23 @@
     <CustomValidator @ref="customValidator" />
     <div class="container-fluid">
         <div class="row">
-            <div class="col">
-                <label>Room & Desk</label>
+            <div class="col-3">
+                <label>Room</label>
             </div>
 
-            <div class="col">
+            <div class="col-2">
+                <label>Desk</label>
+            </div>
+
+            <div class="col-2">
                 <label>User</label>
             </div>
 
-            <div class="col">
+            <div class="col-2">
                 <label>Start Week</label>
             </div>
 
-            <div class="col">
+            <div class="col-2">
                 <label>End Week</label>
             </div>
 
@@ -35,7 +39,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-3">
                 <div class="form-group">
                     <select @bind="RoomId" class="form-control mb-2" id="Room">
                         @if (rooms != null)
@@ -46,6 +50,11 @@
                             }
                         }
                     </select>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-group">
                     <select @bind="planning.DeskId" class="form-control" id="Desk">
                         @if (desks != null)
                         {
@@ -59,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="col">
+            <div class="col-2">
                 <div class="form-group">
                     <select @bind=planning.UserId class="form-control" id="User">
                         @if (users != null)
@@ -74,13 +83,14 @@
                 </div>
             </div>
 
-            <div class="col">
+            <div class="col-2">
                 <div class="form-group">
                     <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
                     <ValidationMessage For="@(() => planning.StartDate)" />
                 </div>
             </div>
-            <div class="col">
+
+            <div class="col-2">
                 <div class="form-group">
                     <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
                     <ValidationMessage For="@(() => planning.EndDate)" />

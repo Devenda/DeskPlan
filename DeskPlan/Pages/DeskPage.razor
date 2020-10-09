@@ -9,7 +9,7 @@
 
 @if (isAdd || isEdit)
 {
-    <EditForm Model="@desk" OnValidSubmit="@AddDesk">
+    <EditForm Model="@desk" OnValidSubmit="@HandleValidSubmit">
         <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -22,6 +22,7 @@
 
                     <div class="modal-body">
                         <DataAnnotationsValidator />
+                        <CustomValidator @ref="customValidator" />
                         <div class="form-group">
                             <label>Room</label>
                             <select @bind=desk.RoomId class="form-control" id="Room">
@@ -135,6 +136,8 @@ else
 }
 
 @code {
+    private CustomValidator customValidator;
+
     //Model
     private Models.Desk? desk = new Models.Desk();
     private List<Models.Desk?> desks = new List<Models.Desk?>();
@@ -172,6 +175,11 @@ else
         await RefreshDesks();
     }
 
+    private async Task<List<Models.Room>> GetRooms()
+    {
+        return await _RoomService.GetAllRooms();
+    }
+
     private async Task RefreshDesks()
     {
         desks = await _deskService.GetAllDesksAsync();
@@ -179,17 +187,50 @@ else
     #endregion
 
     #region CRUD
-    private async void AddDesk()
+    private async void HandleValidSubmit()
+    {
+        customValidator.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        if (string.IsNullOrEmpty(desk.Name) || string.IsNullOrWhiteSpace(desk.Name))
+        {
+            errors.Add(nameof(desk.Name),
+                new List<string>() { "A Desk's name is required." });
+        }
+
+        if (await RoomIsFull())
+        {
+            errors.Add(nameof(desk.RoomId),
+                new List<string>() { "Room is full..." });
+        }
+
+        if (errors.Count() > 0)
+        {
+            customValidator.DisplayErrors(errors);
+        }
+        else
+        {
+            await AddDesk();
+        }
+    }
+
+    private async Task<bool> RoomIsFull()
+    {
+        var currentDesks = (await _deskService.GetAllDesksForRoomAsync(desk.RoomId)).Count;
+        var maxDesks = int.Parse(rooms.Where(r => r.RoomId == desk.RoomId).FirstOrDefault().MaxDesks);
+
+        if (currentDesks >= maxDesks) return true;
+        else return false;
+    }
+
+    //TODO: add extra edit method and call in handlevalidsubmit
+    private async Task AddDesk()
     {
         try
         {
             if (desk != null)
             {
-                //if (desk.Room == null)
-                //{
-                //    desk.Room = await _RoomService.GetByIdAsync(desk.RoomId);
-                //}
-
                 if (isAdd) await _deskService.InsertDeskAsync(desk);
                 if (isEdit) await _deskService.UpdateDeskAsync(desk);
             }
@@ -240,9 +281,4 @@ else
         }
     }
     #endregion
-
-    private async Task<List<Models.Room>> GetRooms()
-    {
-        return await _RoomService.GetAllRooms();
-    }
 }
