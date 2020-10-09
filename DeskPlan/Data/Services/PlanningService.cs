@@ -22,8 +22,19 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.Planning?>> GetAllPlanningsAsync()
         {
-            return (await _planningRepository.GetAllPlanningsAsync()).Select(r => r.ToModel())
+            var planning = (await _planningRepository.GetAllPlanningsAsync()).Select(r => r.ToModel())
                                                              .ToList();
+
+            // Is plan has no end just set is a week past the last end time
+            var maxEnd = planning.Max(p => p.EndDate);
+
+            foreach (var plan in planning)
+            {
+                if (plan.EndDate == null)
+                    plan.EndDate = maxEnd?.AddDays(7);
+            }
+
+            return planning;
         }
 
         public async Task InsertPlanningAsync(Models.Planning planning)

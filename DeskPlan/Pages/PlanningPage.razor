@@ -3,12 +3,11 @@
 @inject IJSRuntime JsRuntime
 
 @inject DeskPlan.Data.Services.PlanningService _planningService
-@inject DeskPlan.Data.Services.RoomService _RoomService
+@inject DeskPlan.Data.Services.RoomService _roomService
 @inject DeskPlan.Data.Services.DeskService _deskService
 @inject DeskPlan.Data.Services.UserService _userService
 
 <h3>Planning</h3>
-
 <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <CustomValidator @ref="customValidator" />
@@ -105,7 +104,7 @@
 </EditForm>
 
 @* chart js code can be found in _Host.cshtml *@
-<div class="pt-4" id="planning"></div>
+<div class="pt-2" id="planning"></div>
 
 @code {
     private CustomValidator customValidator;
@@ -123,17 +122,9 @@
             RefreshDesks(roomId);
             if (desks != null && desks.Any())
             {
-                DeskId = desks.FirstOrDefault().DeskId;
+                planning.DeskId = desks.FirstOrDefault().DeskId;
             }
         }
-    }
-
-    private int deskId;
-
-    public int DeskId
-    {
-        get { return deskId; }
-        set { deskId = value; }
     }
 
     private Models.Planning? planning = new Models.Planning();
@@ -157,7 +148,7 @@
         await RefreshUsers();
 
         planning.StartDate = DateTime.Now;
-        planning.EndDate = DateTime.Now;
+        planning.EndDate = DateTime.Now.AddDays(7);
 
         rowSelectedAction = RowSelected;
     }
@@ -170,19 +161,23 @@
         await JsRuntime.InvokeAsync<Task>("drawChart", plannings);
     }
 
+    //TODO: Move all ordering to service?
     private async Task RefreshRooms()
     {
-        rooms = await _RoomService.GetAllRooms();
+        rooms = (await _roomService.GetAllRooms()).OrderBy(r => r.Name)
+                                                  .ToList();
     }
 
     private async Task RefreshDesks(int roomId)
     {
-        desks = await _deskService.GetAllDesksForRoomAsync(roomId);
+        desks = (await _deskService.GetAllDesksForRoomAsync(roomId)).OrderBy(d => d.Name)
+                                                                    .ToList();
     }
 
     private async Task RefreshUsers()
     {
-        users = await _userService.GetAllUsersAsync();
+        users = (await _userService.GetAllUsersAsync()).OrderBy(u => (u.FirstName + " " + u.LastName))
+                                                       .ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool first)
@@ -201,7 +196,13 @@
         if (planning.DeskId == 0)
         {
             errors.Add(nameof(planning.DeskId),
-                new List<string>() { "A Desk is required." });
+                new List<string>() { "Desk is required." });
+        }
+
+        if (planning.UserId == 0)
+        {
+            errors.Add(nameof(planning.UserId),
+                new List<string>() { "User is required." });
         }
 
         if (errors.Count() > 0)
