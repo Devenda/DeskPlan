@@ -1,5 +1,6 @@
 ﻿using DeskPlan.Core.Repositories.Interfaces;
 using DeskPlan.Data.Mapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,12 @@ namespace DeskPlan.Data.Services
             }
 
             return planning;
+        }
+
+        public async Task<List<Models.Planning?>> GetPlanningsActiveBetweenAsync(DateTime startDate, DateTime endDate)
+        {
+            return (await _planningRepository.GetPlanningsActiveBetweenAsync(startDate, endDate)).Select(r => r.ToModel())
+                                                                                                 .ToList(); ;
         }
 
         public async Task InsertPlanningAsync(Models.Planning planning)

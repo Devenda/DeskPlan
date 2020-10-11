@@ -14,6 +14,8 @@
     <base href="~/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
 </head>
 <body>
     <app>
@@ -33,6 +35,8 @@
 
     <script src="_framework/blazor.server.js"></script>
 
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         window.drawChart = (data) => {
@@ -43,7 +47,7 @@
                 var container = document.getElementById('planning');
                 var chart = new google.visualization.Timeline(container);
 
-                 chart.opt
+                chart.opt
 
                 // Listen for select event
                 google.visualization.events.addListener(chart, 'select', function () {

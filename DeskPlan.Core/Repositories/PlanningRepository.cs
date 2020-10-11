@@ -2,7 +2,9 @@
 using DeskPlan.Core.Entities;
 using DeskPlan.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeskPlan.Core.Repositories
@@ -23,6 +25,15 @@ namespace DeskPlan.Core.Repositories
                                             .ToListAsync();
         }
 
+        //Returns plannings that are active between the given dates (eg active on the given start and/or enddate)
+        public async Task<List<Planning>> GetPlanningsActiveBetweenAsync(DateTime startDate, DateTime endDate)
+        {
+            return await _dpContext.Planning.Include(p => p.User)
+                                            .Include(p => p.Desk)
+                                            .Where(p => (p.StartDate <= endDate && p.EndDate >= startDate))
+                                            .ToListAsync();
+        }
+
         public async Task<Planning> GetByIdAsync(int id)
         {
             var r = await _dpContext.Planning.FindAsync(id);
@@ -30,7 +41,7 @@ namespace DeskPlan.Core.Repositories
 
             return r;
         }
-             
+
 
         public async Task InsertPlanningAsync(Planning planning)
         {

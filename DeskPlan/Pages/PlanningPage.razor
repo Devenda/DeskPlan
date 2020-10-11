@@ -1,5 +1,10 @@
 ﻿@page "/planning"
 
+@using System.Collections
+
+@using Radzen
+@using Radzen.Blazor
+
 @inject IJSRuntime JsRuntime
 
 @inject DeskPlan.Data.Services.PlanningService _planningService
@@ -103,11 +108,19 @@
     </div>
 </EditForm>
 
+<RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
+<label>@planningSelectedMin</label>
+<label>@planningSelectedMax</label>
+
 @* chart js code can be found in _Host.cshtml *@
 <div class="pt-2" id="planning"></div>
 
 @code {
     private CustomValidator customValidator;
+
+    private int planningMax;
+    private int planningSelectedMin;
+    private int planningSelectedMax;
 
     //Model
     private int roomId;
@@ -151,11 +164,28 @@
         planning.EndDate = DateTime.Now.AddDays(7);
 
         rowSelectedAction = RowSelected;
+
+        var plannings = await _planningService.GetAllPlanningsAsync();
+        planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
     }
 
-    private async Task RefreshPlannings()
+    protected override async Task OnAfterRenderAsync(bool first)
     {
-        plannings = await _planningService.GetAllPlanningsAsync();
+        if (first) await RefreshPlannings(null, null);
+    }
+
+    private async Task Change(IEnumerable<int> values)
+    {
+        var vals = values.ToArray();
+        planningSelectedMin = vals[0];
+        planningSelectedMax = vals[1];
+
+        await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
+    }
+
+    private async Task RefreshPlannings(DateTime? startDate, DateTime? endDate)
+    {
+        plannings = await _planningService.GetPlanningsActiveBetweenAsync(startDate ?? DateTime.Now, endDate ?? DateTime.Now.AddDays(365));
 
         // Draw chart
         await JsRuntime.InvokeAsync<Task>("drawChart", plannings);
@@ -178,11 +208,6 @@
     {
         users = (await _userService.GetAllUsersAsync()).OrderBy(u => (u.FirstName + " " + u.LastName))
                                                        .ToList();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool first)
-    {
-        await RefreshPlannings();
     }
     #endregion
 
@@ -220,7 +245,8 @@
         try
         {
             await _planningService.InsertPlanningAsync(planning);
-            await RefreshPlannings();
+
+            await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
         }
         catch (Exception e)
         {
