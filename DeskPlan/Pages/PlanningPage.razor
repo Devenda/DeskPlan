@@ -169,6 +169,7 @@
         planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
     }
 
+    //Needed for the first render when opening the page
     protected override async Task OnAfterRenderAsync(bool first)
     {
         if (first) await RefreshPlannings(null, null);

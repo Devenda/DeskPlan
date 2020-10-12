@@ -30,7 +30,7 @@ namespace DeskPlan.Core.Repositories
         {
             return await _dpContext.Planning.Include(p => p.User)
                                             .Include(p => p.Desk)
-                                            .Where(p => (p.StartDate <= endDate && p.EndDate >= startDate))
+                                            .Where(p => (p.StartDate <= endDate && (p.EndDate >= startDate || p.EndDate == null)))
                                             .ToListAsync();
         }
 
