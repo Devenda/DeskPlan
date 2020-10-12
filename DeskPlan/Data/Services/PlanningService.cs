@@ -45,7 +45,7 @@ namespace DeskPlan.Data.Services
             foreach (var plan in plannings)
             {
                 if (plan.EndDate == null)
-                    plan.EndDate = maxEnd?.AddDays(7);
+                    plan.EndDate = (maxEnd ?? DateTime.Now).AddDays(7);
             }
 
             return plannings;

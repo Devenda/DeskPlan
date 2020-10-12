@@ -45,7 +45,7 @@
         <div class="row">
             <div class="col-3">
                 <div class="form-group">
-                    <select @bind="RoomId" class="form-control mb-2" id="Room">
+                    <select @bind="RoomId" class="form-control" id="Room">
                         @if (rooms != null)
                         {
                             foreach (Models.Room room in rooms)
@@ -108,9 +108,15 @@
     </div>
 </EditForm>
 
-<RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
-<label>@planningSelectedMin</label>
-<label>@planningSelectedMax</label>
+<div class="container-fluid">
+    <div class="row">
+        <RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
+    </div>
+    <div class="row mt-1 mb-2">
+        <div class="col">@(DateTime.Now.AddDays(planningSelectedMin).ToString("dd MMM yyyy"))</div>
+        <div class="col text-right">@(DateTime.Now.AddDays(planningSelectedMax).ToString("dd MMM yyyy"))</div>
+    </div>
+</div>
 
 @* chart js code can be found in _Host.cshtml *@
 <div class="pt-2" id="planning"></div>
@@ -166,7 +172,7 @@
         rowSelectedAction = RowSelected;
 
         var plannings = await _planningService.GetAllPlanningsAsync();
-        planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
+        planningSelectedMax = planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
     }
 
     //Needed for the first render when opening the page
