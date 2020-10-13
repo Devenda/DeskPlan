@@ -47,8 +47,6 @@
                 var container = document.getElementById('planning');
                 var chart = new google.visualization.Timeline(container);
 
-                chart.opt
-
                 // Listen for select event
                 google.visualization.events.addListener(chart, 'select', function () {
                     var selection = chart.getSelection();
@@ -73,11 +71,15 @@
 
                 var options = {
                     chartArea: { left: 0, top: 0, width: "100%", height: "100%" },
-                    height: 520
+                    height: '80%'
                 };
 
-                var dt = dataTable;
-                chart.draw(dataTable, options);
+                //chart.draw(dataTable, options);
+                drawChart();
+                window.addEventListener('resize', drawChart, false);
+                function drawChart() {
+                    chart.draw(dataTable, options);
+                }
             }
         }
     </script>
