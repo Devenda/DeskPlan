@@ -74,10 +74,21 @@
                     height: '80%'
                 };
 
-                //chart.draw(dataTable, options);
-                drawChart();
-                window.addEventListener('resize', drawChart, false);
-                function drawChart() {
+                drawChart(false);
+
+                window.addEventListener('resize', resizeStarted, false);
+                window.addEventListener('resizeEnd', drawChart(true), false);
+
+                const resizeEndEvent = new Event('resizeEnd');
+                function resizeStarted() {
+                    if (this.resizeTO) clearTimeout(this.resizeTO);
+                    this.resizeTO = setTimeout(function () {
+                        window.dispatchEvent(resizeEndEvent);
+                    }, 500);
+                }
+
+                function drawChart(calledByEvent) {
+                    if (calledByEvent) { DotNet.invokeMethodAsync('DeskPlan', 'ResizeCaller'); }
                     chart.draw(dataTable, options);
                 }
             }

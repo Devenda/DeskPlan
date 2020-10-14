@@ -121,7 +121,10 @@
             </div>
 
                 @* chart js code can be found in _Host.cshtml *@
-                <div class="row flex-grow-1 pt-2" id="planning" />
+                @if (kludge)
+                {
+                    <div class="row flex-grow-1 pt-2" id="planning" />
+                }
             </div>
         </div>
     </div>
