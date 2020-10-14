@@ -75,10 +75,14 @@
                 };
 
                 //chart.draw(dataTable, options);
+                //WTF?
                 drawChart();
                 window.addEventListener('resize', drawChart, false);
                 function drawChart() {
-                    chart.draw(dataTable, options);
+                    // Call resizer
+                    DotNet.invokeMethodAsync('DeskPlan', 'ResizeCaller');
+                    chart.draw(dataTable, options);    
+                    // Called resizer
                 }
             }
         }
