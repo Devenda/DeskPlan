@@ -120,8 +120,9 @@
                 </div>
             </div>
 
-            @* chart js code can be found in _Host.cshtml *@
-            <div class="row" style="height: 80vh;" id="planning" />
+                @* chart js code can be found in _Host.cshtml *@
+                <div class="row flex-grow-1 pt-2" id="planning" />
+            </div>
         </div>
     </div>
 </div>
@@ -134,6 +135,8 @@
     private int planningMax;
     private int planningSelectedMin;
     private int planningSelectedMax;
+
+    private bool kludge = true;
 
     //Model
     private int roomId;
@@ -162,6 +165,7 @@
 
     //Row selected helper
     private static Action<int> rowSelectedAction;
+    private static Action resizeAction;
 
     //Error handling
     [CascadingParameter(Name = "ErrorComponent")]
@@ -177,6 +181,7 @@
         planning.EndDate = DateTime.Now.AddDays(7);
 
         rowSelectedAction = RowSelected;
+        resizeAction = Resize;
 
         var plannings = await _planningService.GetAllPlanningsAsync();
         planningSelectedMax = planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
@@ -273,12 +278,32 @@
     private void RowSelected(int row)
     {
         planning = plannings[row];
+        // Draw chart
+        JsRuntime.InvokeAsync<Task>("drawChart", plannings);
+    }
+
+    private void Resize()
+    {
+        // Draw chart
+        kludge = false;
+        StateHasChanged();
+        kludge = true;
+        StateHasChanged();
+
+        JsRuntime.InvokeAsync<Task>("drawChart", plannings);
+
     }
 
     [JSInvokable]
     public static void RowSelectedCaller(int row)
     {
         rowSelectedAction.Invoke(row);
+    }
+
+    [JSInvokable]
+    public static void ResizeCaller()
+    {
+        resizeAction.Invoke();
     }
     #endregion
 }
