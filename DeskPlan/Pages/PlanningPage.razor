@@ -14,9 +14,9 @@
 
 
 <div class="container-fluid">
-    <div class="row min-vh-100">
+    <div class="row">
         <div class="col">
-            <div class="d-flex flex-column h-100 pt-2">
+            <div class="pt-2">
                 <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
                     <CustomValidator @ref="customValidator" />
@@ -118,13 +118,15 @@
                     <div class="col">@(DateTime.Now.AddDays(planningSelectedMin).ToString("dd MMM yyyy"))</div>
                     <div class="col text-right">@(DateTime.Now.AddDays(planningSelectedMax).ToString("dd MMM yyyy"))</div>
                 </div>
-
-                @* chart js code can be found in _Host.cshtml *@
-                <div class="row flex-grow-1 pt-2" id="planning" />
             </div>
+
+            @* chart js code can be found in _Host.cshtml *@
+            <div class="row" style="height: 80vh;" id="planning" />
         </div>
     </div>
 </div>
+
+
 
 @code {
     private CustomValidator customValidator;
