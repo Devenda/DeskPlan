@@ -17,7 +17,7 @@
     <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
         <CustomValidator @ref="customValidator" />
-        <div class="row">
+        <div class="row pt-2">
             <div class="col-3">
                 <label>Room</label>
             </div>
@@ -114,8 +114,11 @@
     </div>
 
     @* chart js code can be found in _Host.cshtml *@
-    <div class="row" style="height: calc(100% - 115px);" id="planning" />
+    <div class="row pt-2" style="height: calc(100% - 140px); " id="planning">
+        <div class="col" id="planning"/>
+    </div>
 </div>
+
 
 @code {
     private CustomValidator customValidator;
