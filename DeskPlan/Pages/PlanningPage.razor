@@ -13,7 +13,7 @@
 @inject DeskPlan.Data.Services.UserService _userService
 
 
-<div class="container-fluid"  style="height: 20vh;">
+<div class="container-fluid" style="height: 100vh;">
     <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
         <CustomValidator @ref="customValidator" />
@@ -106,16 +106,15 @@
             </div>
         </div>
     </EditForm>
-</div>
 
-<div class="container-fluid" style="height: 80vh;">
-    @* chart js code can be found in _Host.cshtml *@
-    <div class="row" style="height: 90%;" id="planning" />
-    <div class="row" style="height: 10%;">
+    <div class="row">
         <RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
         <div class="col">@(DateTime.Now.AddDays(planningSelectedMin).ToString("dd MMM yyyy"))</div>
         <div class="col text-right">@(DateTime.Now.AddDays(planningSelectedMax).ToString("dd MMM yyyy"))</div>
     </div>
+
+    @* chart js code can be found in _Host.cshtml *@
+    <div class="row" style="height: calc(100% - 115px);" id="planning" />
 </div>
 
 @code {
