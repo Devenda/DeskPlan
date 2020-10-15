@@ -13,117 +13,108 @@
 @inject DeskPlan.Data.Services.UserService _userService
 
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <div class="pt-2">
-                <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    <CustomValidator @ref="customValidator" />
-                    <div class="row">
-                        <div class="col-3">
-                            <label>Room</label>
-                        </div>
-
-                        <div class="col-2">
-                            <label>Desk</label>
-                        </div>
-
-                        <div class="col-2">
-                            <label>User</label>
-                        </div>
-
-                        <div class="col-2">
-                            <label>Start Week</label>
-                        </div>
-
-                        <div class="col-2">
-                            <label>End Week</label>
-                        </div>
-
-                        <div class="col-1">
-                            <label></label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="form-group">
-                                <select @bind="RoomId" class="form-control" id="Room">
-                                    @if (rooms != null)
-                                    {
-                                        foreach (Models.Room room in rooms)
-                                        {
-                                            <option value="@room.RoomId">@room.Name</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-2">
-                            <div class="form-group">
-                                <select @bind="planning.DeskId" class="form-control" id="Desk">
-                                    @if (desks != null)
-                                    {
-                                        foreach (Models.Desk desk in desks)
-                                        {
-                                            <option value="@desk.DeskId">@desk.Name</option>
-                                        }
-                                    }
-                                </select>
-                                <ValidationMessage For="@(() => planning.DeskId)" />
-                            </div>
-                        </div>
-
-                        <div class="col-2">
-                            <div class="form-group">
-                                <select @bind=planning.UserId class="form-control" id="User">
-                                    @if (users != null)
-                                    {
-                                        foreach (Models.User user in users)
-                                        {
-                                            <option value="@user.UserId">@(user.FirstName + " " + user.LastName) </option>
-                                        }
-                                    }
-                                </select>
-                                <ValidationMessage For="@(() => planning.UserId)" />
-                            </div>
-                        </div>
-
-                        <div class="col-2">
-                            <div class="form-group">
-                                <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
-                                <ValidationMessage For="@(() => planning.StartDate)" />
-                            </div>
-                        </div>
-
-                        <div class="col-2">
-                            <div class="form-group">
-                                <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
-                                <ValidationMessage For="@(() => planning.EndDate)" />
-                            </div>
-                        </div>
-
-                        <div class="col-1">
-                            <input type="submit" class="btn btn-primary" value="Save" />
-                        </div>
-                    </div>
-                </EditForm>
-
-                <div class="row">
-                    <RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
+<div class="container-fluid" style="height: 100vh;">
+    <div class="row" style="min-height: 0;">
+        <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <CustomValidator @ref="customValidator" />
+            <div class="row">
+                <div class="col-3">
+                    <label>Room</label>
                 </div>
 
-                <div class="row mt-1 mb-2">
-                    <div class="col">@(DateTime.Now.AddDays(planningSelectedMin).ToString("dd MMM yyyy"))</div>
-                    <div class="col text-right">@(DateTime.Now.AddDays(planningSelectedMax).ToString("dd MMM yyyy"))</div>
+                <div class="col-2">
+                    <label>Desk</label>
+                </div>
+
+                <div class="col-2">
+                    <label>User</label>
+                </div>
+
+                <div class="col-2">
+                    <label>Start Week</label>
+                </div>
+
+                <div class="col-2">
+                    <label>End Week</label>
+                </div>
+
+                <div class="col-1">
+                    <label></label>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-group">
+                        <select @bind="RoomId" class="form-control" id="Room">
+                            @if (rooms != null)
+                            {
+                                foreach (Models.Room room in rooms)
+                                {
+                                    <option value="@room.RoomId">@room.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
 
-            @* chart js code can be found in _Host.cshtml *@
-            <div class="row" style="height: 80vh;" id="planning" />
-        </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <select @bind="planning.DeskId" class="form-control" id="Desk">
+                            @if (desks != null)
+                            {
+                                foreach (Models.Desk desk in desks)
+                                {
+                                    <option value="@desk.DeskId">@desk.Name</option>
+                                }
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => planning.DeskId)" />
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <select @bind=planning.UserId class="form-control" id="User">
+                            @if (users != null)
+                            {
+                                foreach (Models.User user in users)
+                                {
+                                    <option value="@user.UserId">@(user.FirstName + " " + user.LastName) </option>
+                                }
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => planning.UserId)" />
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
+                        <ValidationMessage For="@(() => planning.StartDate)" />
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
+                        <ValidationMessage For="@(() => planning.EndDate)" />
+                    </div>
+                </div>
+
+                <div class="col-1">
+                    <input type="submit" class="btn btn-primary" value="Save" />
+                </div>
+            </div>
+        </EditForm>
+
+        <RadzenSlider Range="true" Min="0" Max="planningMax" TValue="IEnumerable<int>" Change="@((args) => Change(args))" Style="width: 100%" />
+        <div class="col">@(DateTime.Now.AddDays(planningSelectedMin).ToString("dd MMM yyyy"))</div>
+        <div class="col text-right">@(DateTime.Now.AddDays(planningSelectedMax).ToString("dd MMM yyyy"))</div>
     </div>
+
+    @* chart js code can be found in _Host.cshtml *@
+    <div class="row" style="height: 80%;" id="planning" />
 </div>
 
 

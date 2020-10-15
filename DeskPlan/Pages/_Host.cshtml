@@ -69,16 +69,12 @@
                     dataTable.addRow([desk, name, start, end]);
                 }
 
-                var options = {
-                    chartArea: { left: 0, top: 0, width: "100%", height: "100%" }
-                };
-
                 drawChart(false);
 
                 window.addEventListener('resize', drawChart, false);
 
                 function drawChart() {
-                    chart.draw(dataTable, options);
+                    chart.draw(dataTable);
                 }
             }
         }
