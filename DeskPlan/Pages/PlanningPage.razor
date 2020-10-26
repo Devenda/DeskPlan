@@ -102,7 +102,7 @@
             </div>
 
             <div class="col-1">
-                <input type="submit" class="btn btn-primary" value="Save" />
+                <input type="submit" class="btn btn-primary" value=@(isEdit?"Edit":"Save")/>
             </div>
         </div>
     </EditForm>
@@ -115,7 +115,7 @@
 
     @* chart js code can be found in _Host.cshtml *@
     <div class="row pt-2" style="height: calc(100% - 140px); " id="planning">
-        <div class="col" id="planning"/>
+        <div class="col" id="planning" />
     </div>
 </div>
 
@@ -129,7 +129,6 @@
 
     //Model
     private int roomId;
-
     public int RoomId
     {
         get { return roomId; }
@@ -151,6 +150,9 @@
     private List<Models.Room> rooms = new List<Models.Room>();
     private List<Models.Desk> desks = new List<Models.Desk>();
     private List<Models.User> users = new List<Models.User>();
+
+    //Display
+    private bool isEdit;
 
     //Row selected helper
     private static Action<int> rowSelectedAction;
@@ -215,6 +217,16 @@
         users = (await _userService.GetAllUsersAsync()).OrderBy(u => (u.FirstName + " " + u.LastName))
                                                        .ToList();
     }
+
+    private async Task SetEdit(Models.Planning pln)
+    {
+        planning = await _planningService.GetByIdAsync(pln.PlanningId);
+        RoomId = planning.Desk.RoomId;
+
+        isEdit = true;
+
+        StateHasChanged();
+    }
     #endregion
 
     #region CRUD
@@ -242,7 +254,31 @@
         }
         else
         {
-            await AddPlanning();
+            if (isEdit)
+            {
+                await UpdatePlanning();
+            }
+            else
+            {
+                await AddPlanning();
+            }
+        }
+    }
+
+    private async Task UpdatePlanning()
+    {
+        try
+        {
+            await _planningService.UpdatePlanningAsync(planning);
+
+            await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
+
+            isEdit = false;
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
         }
     }
 
@@ -262,9 +298,9 @@
     #endregion
 
     #region event handlers
-    private void RowSelected(int row)
+    private async void RowSelected(int row)
     {
-        planning = plannings[row];
+        await SetEdit(plannings[row]);
     }
 
     [JSInvokable]
