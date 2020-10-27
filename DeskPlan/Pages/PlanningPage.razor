@@ -18,7 +18,7 @@
         <DataAnnotationsValidator />
         <CustomValidator @ref="customValidator" />
         <div class="row pt-2">
-            <div class="col-3">
+            <div class="col-3 pl-0">
                 <label>Room</label>
             </div>
 
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-3 pl-0">
                 <div class="form-group">
                     <select @bind="RoomId" class="form-control" id="Room">
                         @if (rooms != null)
@@ -101,8 +101,19 @@
                 </div>
             </div>
 
-            <div class="col-1">
-                <input type="submit" class="btn btn-primary" value=@(isEdit?"Edit":"Save")/>
+            <div class="col">
+                <div class="row">
+                    <div class="col pl-0">
+                        <input type="submit" class="btn btn-primary" value=@(isEdit?"Edit":"Save") />
+                    </div>
+
+                    @if (isEdit)
+                    {
+                        <div class="col pl-1">
+                            <button class="btn btn-danger" @onclick="@(async () => isDelete = true)">Delete</button>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </EditForm>
@@ -153,6 +164,7 @@
 
     //Display
     private bool isEdit;
+    private bool isDelete;
 
     //Row selected helper
     private static Action<int> rowSelectedAction;
@@ -167,8 +179,7 @@
         await RefreshRooms();
         await RefreshUsers();
 
-        planning.StartDate = DateTime.Now;
-        planning.EndDate = DateTime.Now.AddDays(7);
+        InitPlanning();
 
         rowSelectedAction = RowSelected;
 
@@ -189,6 +200,14 @@
         planningSelectedMax = vals[1];
 
         await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
+    }
+
+    private void InitPlanning()
+    {
+        planning = new Models.Planning();
+
+        planning.StartDate = DateTime.Now;
+        planning.EndDate = DateTime.Now.AddDays(7);
     }
 
     private async Task RefreshPlannings(DateTime? startDate, DateTime? endDate)
@@ -256,12 +275,25 @@
         {
             if (isEdit)
             {
-                await UpdatePlanning();
+                if (isDelete)
+                {
+                    await DeletePlanning();
+                    isDelete = false;
+                }
+                else
+                {
+                    await UpdatePlanning();
+                }
+
+                isEdit = false;
+                InitPlanning();
             }
             else
             {
                 await AddPlanning();
             }
+
+            StateHasChanged();
         }
     }
 
@@ -272,9 +304,6 @@
             await _planningService.UpdatePlanningAsync(planning);
 
             await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
-
-            isEdit = false;
-            StateHasChanged();
         }
         catch (Exception e)
         {
@@ -287,6 +316,20 @@
         try
         {
             await _planningService.InsertPlanningAsync(planning);
+
+            await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
+    }
+
+    private async Task DeletePlanning()
+    {
+        try
+        {
+            await _planningService.DeletePlanningAsync(planning);
 
             await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
         }
