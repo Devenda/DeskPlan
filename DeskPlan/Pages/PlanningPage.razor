@@ -21,24 +21,24 @@
             <div class="col-3 pl-0">
                 <label>Room</label>
             </div>
-
-            <div class="col-2">
+             
+            <div class="col-2 pl-1">
                 <label>Desk</label>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <label>User</label>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <label>Start Week</label>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <label>End Week</label>
             </div>
 
-            <div class="col-1">
+            <div class="col-1 pl-1">
                 <label></label>
             </div>
         </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <div class="form-group">
                     <select @bind="planning.DeskId" class="form-control" id="Desk">
                         @if (desks != null)
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <div class="form-group">
                     <select @bind=planning.UserId class="form-control" id="User">
                         @if (users != null)
@@ -87,14 +87,14 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <div class="form-group">
                     <InputDate type="week" @bind-Value=planning.StartDate class="form-control" id="StartDate" />
                     <ValidationMessage For="@(() => planning.StartDate)" />
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-2 pl-1">
                 <div class="form-group">
                     <InputDate type="week" @bind-Value=planning.EndDate class="form-control" id="EndDate" />
                     <ValidationMessage For="@(() => planning.EndDate)" />
@@ -104,13 +104,13 @@
             <div class="col">
                 <div class="row">
                     <div class="col pl-0">
-                        <input type="submit" class="btn btn-primary" value=@(isEdit ? "Edit" : "Save") />
+                        <input type="submit" class="btn btn-primary" value=@(isEdit ? "Edit" : "Add") />
                     </div>
 
                     @if (isEdit)
                     {
                         <div class="col pl-1">
-                            <button class="btn btn-danger" @onclick="@(async () => isDelete = true)">Delete</button>
+                            <button class="btn btn-danger" @onclick="@(async () => isDelete = true)">Del</button>
                         </div>
                     }
                 </div>

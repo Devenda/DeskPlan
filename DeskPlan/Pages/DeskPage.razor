@@ -3,10 +3,6 @@
 @inject DeskPlan.Data.Services.DeskService _deskService
 @inject DeskPlan.Data.Services.RoomService _RoomService
 
-<div>
-    <h3>Desks</h3>
-</div>
-
 @if (isAdd || isEdit)
 {
     <EditForm Model="@desk" OnValidSubmit="@HandleValidSubmit">
@@ -90,49 +86,52 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Flex?</th>
-                <th>Room</th>
-                <th>
-                    <span class="pl-2">Edit</span>
-                    <button class="btn pb-0 pt-0" @onclick="Add">
-                        <span class="oi oi-plus" aria-hidden="true"></span>
-                    </button>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var desk in desks)
-            {
-                @if (desk != null)
+
+    <div class="pt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Flex?</th>
+                    <th>Room</th>
+                    <th>
+                        <span class="pl-2">Edit</span>
+                        <button class="btn pb-0 pt-0" @onclick="Add">
+                            <span class="oi oi-plus" aria-hidden="true"></span>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var desk in desks)
                 {
-                    <tr>
-                        <td>@desk.Name</td>
-                        @if (desk.Flex)
-                        {
-                            <td>Yes</td>
-                        }
-                        else
-                        {
-                            <td>No</td>
-                        }
-                        <td>@desk.Room.Name</td>
-                        <td>
-                            <button class="btn pb-0 pt-0" @onclick="@(async () => await EditDesk(@desk.DeskId))">
-                                <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </button>
-                            <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteDesk(@desk.DeskId, false))">
-                                <span class="oi oi-circle-x" aria-hidden="true"></span>
-                            </button>
-                        </td>
-                    </tr>
+                    @if (desk != null)
+                    {
+                        <tr>
+                            <td>@desk.Name</td>
+                            @if (desk.Flex)
+                            {
+                                <td>Yes</td>
+                            }
+                            else
+                            {
+                                <td>No</td>
+                            }
+                            <td>@desk.Room.Name</td>
+                            <td>
+                                <button class="btn pb-0 pt-0" @onclick="@(async () => await EditDesk(@desk.DeskId))">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                </button>
+                                <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteDesk(@desk.DeskId, false))">
+                                    <span class="oi oi-circle-x" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
                 }
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
