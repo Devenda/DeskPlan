@@ -104,7 +104,7 @@
             <div class="col">
                 <div class="row">
                     <div class="col pl-0">
-                        <input type="submit" class="btn btn-primary" value=@(isEdit?"Edit":"Save") />
+                        <input type="submit" class="btn btn-primary" value=@(isEdit ? "Edit" : "Save") />
                     </div>
 
                     @if (isEdit)
@@ -138,6 +138,8 @@
     private int planningSelectedMin;
     private int planningSelectedMax;
 
+    private int previousRow;
+
     //Model
     private int roomId;
     public int RoomId
@@ -166,8 +168,9 @@
     private bool isEdit;
     private bool isDelete;
 
-    //Row selected helper
+    //Event helpers
     private static Action<int> rowSelectedAction;
+    private static Action<string> keyDownAction;
 
     //Error handling
     [CascadingParameter(Name = "ErrorComponent")]
@@ -182,6 +185,7 @@
         InitPlanning();
 
         rowSelectedAction = RowSelected;
+        keyDownAction = KeyDown;
 
         var plannings = await _planningService.GetAllPlanningsAsync();
         planningSelectedMax = planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
@@ -243,6 +247,15 @@
         RoomId = planning.Desk.RoomId;
 
         isEdit = true;
+
+        StateHasChanged();
+    }
+
+    private void SetAdd()
+    {
+        InitPlanning();
+
+        isEdit = false;
 
         StateHasChanged();
     }
@@ -341,15 +354,31 @@
     #endregion
 
     #region event handlers
-    private async void RowSelected(int row)
-    {
-        await SetEdit(plannings[row]);
-    }
-
     [JSInvokable]
     public static void RowSelectedCaller(int row)
     {
         rowSelectedAction.Invoke(row);
+    }
+
+    private async void RowSelected(int row)
+    {
+        previousRow = row;
+        await SetEdit(plannings[row]);
+    }
+
+    [JSInvokable]
+    public static void KeyDownCaller(string key)
+    {
+        keyDownAction.Invoke(key);
+    }
+
+    protected void KeyDown(string key)
+    {
+        if (key == "Escape")
+        {
+            // TODO set focus to something else
+            SetAdd();
+        }
     }
     #endregion
 }
