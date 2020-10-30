@@ -33,6 +33,17 @@ namespace DeskPlan.Core.Repositories
                                             .Where(p => (p.StartDate <= endDate && (p.EndDate >= startDate || p.EndDate == null)))
                                             .ToListAsync();
         }
+        
+        public async Task<bool> IsOccupied(int deskId, DateTime startDate, DateTime? endDate)
+        {
+            // TODO Check when endDate is null
+            var plan = await _dpContext.Planning.Include(p => p.User)
+                                                .Include(p => p.Desk)
+                                                .Where(p => p.StartDate <= endDate && (p.EndDate >= startDate || p.EndDate == null) && p.DeskId == deskId)
+                                                .ToListAsync();
+
+            return plan.Count != 0;
+        }
 
         public async Task<Planning> GetByIdAsync(int id)
         {

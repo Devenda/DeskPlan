@@ -13,6 +13,8 @@ namespace DeskPlan.Core.Repositories.Interfaces
 
         Task<List<Planning>> GetPlanningsActiveBetweenAsync(DateTime startDate, DateTime endDate);
 
+        Task<bool> IsOccupied(int deskId, DateTime startDate, DateTime? endDate);
+
         Task InsertPlanningAsync(Planning planning);
 
         Task UpdatePlanningAsync(Planning planning);

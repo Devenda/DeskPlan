@@ -280,6 +280,17 @@
                 new List<string>() { "User is required." });
         }
 
+        if (!isDelete)
+        {
+            // add or update
+            if (await _planningService.IsOccupied(planning.DeskId, planning.StartDate, planning.EndDate))
+            {
+                // TODO betere melding?
+                errors.Add(nameof(planning.DeskId),
+                new List<string>() { "Desk already occupied......................" });
+            }
+        }
+
         if (errors.Count() > 0)
         {
             customValidator.DisplayErrors(errors);
@@ -329,7 +340,7 @@
         try
         {
             await _planningService.InsertPlanningAsync(planning);
-
+            // TODO set timestamps depending on added start and end time
             await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
         }
         catch (Exception e)

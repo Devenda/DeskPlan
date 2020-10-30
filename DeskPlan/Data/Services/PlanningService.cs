@@ -90,5 +90,18 @@ namespace DeskPlan.Data.Services
                 throw;
             }
         }
+
+        public async Task<bool> IsOccupied(int deskId, DateTime startDate, DateTime? endDate)
+        {
+            try
+            {
+                return await _planningRepository.IsOccupied(deskId, startDate, endDate);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
