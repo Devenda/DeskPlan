@@ -55,6 +55,7 @@ namespace DeskPlan.Data.Services
         {
             try
             {
+                // TODO check of user wel nog werkt in die periode
                 await _planningRepository.InsertPlanningAsync(planning.ToEntity());
             }
             catch (System.Exception)
@@ -91,11 +92,11 @@ namespace DeskPlan.Data.Services
             }
         }
 
-        public async Task<bool> IsOccupied(int deskId, DateTime startDate, DateTime? endDate)
+        public async Task<Models.Planning> IsOccupiedBy(int deskId, DateTime startDate, DateTime? endDate)
         {
             try
             {
-                return await _planningRepository.IsOccupied(deskId, startDate, endDate);
+                return (await _planningRepository.IsOccupiedBy(deskId, startDate, endDate)).ToModel();
             }
             catch (System.Exception)
             {

@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <p>Delete User "@user?.FirstName @user?.LastName"?</p>
+                    <p>Delete User "@user?.FirstName @user?.LastName" and all there plannings?</p>
                 </div>
 
                 <div class="modal-footer">
@@ -225,6 +225,7 @@ else
         {
             if (user != null)
             {
+                //TODO check of user nummer nog niet bestaat 
                 if (isAdd) await _userService.InsertUserAsync(user);
                 if (isEdit) await _userService.UpdateUserAsync(user);
             }

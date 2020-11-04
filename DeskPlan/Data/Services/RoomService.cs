@@ -22,7 +22,7 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.Room?>> GetAllRooms()
         {
-            return (await _roomRepository.GetAllRoomsAsync()).Select(r => r.ToModel())
+            return (await _roomRepository.GetAllRoomsAsync()).Select(r => r.ToModel())                                                             
                                                              .ToList();
         }
 

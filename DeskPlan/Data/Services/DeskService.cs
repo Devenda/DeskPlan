@@ -23,6 +23,8 @@ namespace DeskPlan.Data.Services
         public async Task<List<Models.Desk?>> GetAllDesksAsync()
         {
             return (await _deskRepository.GetAllDesksAsync()).Select(d => d.ToModel())
+                                                             .OrderBy(d => d.RoomId)
+                                                             .OrderBy(d => d.Name)
                                                              .ToList();
         }
 

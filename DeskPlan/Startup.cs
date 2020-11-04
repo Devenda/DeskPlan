@@ -87,6 +87,8 @@ namespace DeskPlan
 
         private void StartElectron()
         {
+            // TODO Set bigger when starting
+            // TODO Version number
             var menu = new MenuItem[] {
                 //new MenuItem {
                 //    Label = "File",

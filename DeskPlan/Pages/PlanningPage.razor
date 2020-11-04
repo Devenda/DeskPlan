@@ -157,6 +157,7 @@
         }
     }
 
+    // TODO catch delete action of end time and fill in end time of contract
     private Models.Planning? planning = new Models.Planning();
     private List<Models.Planning?> plannings = new List<Models.Planning?>();
 
@@ -283,11 +284,12 @@
         if (!isDelete)
         {
             // add or update
-            if (await _planningService.IsOccupied(planning.DeskId, planning.StartDate, planning.EndDate))
+            var plan = (await _planningService.IsOccupiedBy(planning.DeskId, planning.StartDate, planning.EndDate));
+            if (plan != null)
             {
-                // TODO betere melding?
+                // TODO plaats melding beter in html
                 errors.Add(nameof(planning.DeskId),
-                new List<string>() { "Desk already occupied......................" });
+                new List<string>() { plan.EndDate != null ? $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")} till {plan.EndDate?.ToString("dd MMM yyyy")}.": $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")}." }) ;
             }
         }
 
@@ -341,7 +343,7 @@
         {
             await _planningService.InsertPlanningAsync(planning);
             // TODO set timestamps depending on added start and end time
-            await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
+            await RefreshPlannings(null, null);
         }
         catch (Exception e)
         {
@@ -390,6 +392,8 @@
             // TODO set focus to something else
             SetAdd();
         }
+
+        // TODO del as remove: opgelet js filtert momenteel enkel op ESCAPE!
     }
     #endregion
 }

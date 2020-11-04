@@ -41,7 +41,9 @@
     <script type="text/javascript">
         // needed to catch escape keypress
         document.onkeydown = (e) => {
-            DotNet.invokeMethodAsync('DeskPlan', 'KeyDownCaller', e.key);
+            if (e.key == "Escape") {
+                DotNet.invokeMethodAsync('DeskPlan', 'KeyDownCaller', e.key);
+            }            
         }
         window.drawChart = (data) => {
             google.charts.load('current', { 'packages': ['timeline'] });
