@@ -34,6 +34,10 @@ namespace DeskPlan.Core.Context
             modelBuilder.Entity<User>()
                         .HasIndex(u => u.Number)
                         .IsUnique();
+
+            modelBuilder.Entity<Desk>()
+                        .HasIndex(d => d.Name)
+                        .IsUnique();
         }
     }
 }

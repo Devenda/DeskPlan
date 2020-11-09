@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await DeleteDesk(@desk.DeskId, true))" />
+                    <input type="submit" class="btn btn-danger" value="Confirm" @onclick="@(async () => await ModalDeleteDesk(@desk.DeskId, true))" />
                     <input type="submit" class="btn btn-primary" value="Cancel" @onclick="CloseModal" />
                 </div>
             </div>
@@ -119,10 +119,10 @@ else
                             }
                             <td>@desk.Room.Name</td>
                             <td>
-                                <button class="btn pb-0 pt-0" @onclick="@(async () => await EditDesk(@desk.DeskId))">
+                                <button class="btn pb-0 pt-0" @onclick="@(async () => await ModalEditDesk(@desk.DeskId))">
                                     <span class="oi oi-pencil" aria-hidden="true"></span>
                                 </button>
-                                <button class="btn pb-0 pt-0" @onclick="@(async () => await DeleteDesk(@desk.DeskId, false))">
+                                <button class="btn pb-0 pt-0" @onclick="@(async () => await ModalDeleteDesk(@desk.DeskId, false))">
                                     <span class="oi oi-circle-x" aria-hidden="true"></span>
                                 </button>
                             </td>
@@ -198,13 +198,20 @@ else
                 new List<string>() { "A Desk's name is required." });
         }
 
-        if (await RoomIsFull())
+        if (await DeskExists(desk.Name))
+        {
+            if ((isEdit && (await _deskService.GetByIdAsync(desk.DeskId)).Name != desk.Name) || isAdd)
+            {
+                errors.Add(nameof(desk.Name),
+            new List<string>() { "A desk with this name already exists." });
+            }
+        }
+
+        if (isAdd && await RoomIsFull())
         {
             errors.Add(nameof(desk.RoomId),
                 new List<string>() { "Room is full..." });
         }
-
-        //TODO Check of room al bestaat
 
         if (errors.Count() > 0)
         {
@@ -212,7 +219,8 @@ else
         }
         else
         {
-            await AddDesk();
+            if (isAdd) await AddDesk();
+            if (isEdit) await EditDesk();
         }
     }
 
@@ -225,18 +233,24 @@ else
         else return false;
     }
 
-    //TODO: add extra edit method and call in handlevalidsubmit
+    private async Task<bool> DeskExists(string name)
+    {
+        var currentDesks = (await _deskService.GetAllDesksForRoomAsync(desk.RoomId));
+
+        if (currentDesks.Where(d => d.Name == name).Any()) return true;
+        else return false;
+    }
+
     private async Task AddDesk()
     {
         try
         {
             if (desk != null)
             {
-                if (isAdd) await _deskService.InsertDeskAsync(desk);
-                if (isEdit) await _deskService.UpdateDeskAsync(desk);
+                await _deskService.InsertDeskAsync(desk);
             }
 
-            isEdit = isAdd = false;
+            isAdd = false;
             await RefreshDesks();
         }
         catch (Exception e)
@@ -246,7 +260,26 @@ else
         }
     }
 
-    protected async Task EditDesk(int deskId)
+    private async Task EditDesk()
+    {
+        try
+        {
+            if (desk != null)
+            {
+                await _deskService.UpdateDeskAsync(desk);
+            }
+
+            isEdit = false;
+            await RefreshDesks();
+        }
+        catch (Exception e)
+        {
+            CloseModal();
+            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
+        }
+    }
+
+    protected async Task ModalEditDesk(int deskId)
     {
         try
         {
@@ -262,7 +295,7 @@ else
         }
     }
 
-    protected async Task DeleteDesk(int deskId, bool confirmed)
+    protected async Task ModalDeleteDesk(int deskId, bool confirmed)
     {
         try
         {
