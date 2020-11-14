@@ -19,9 +19,15 @@ namespace DeskPlan.Data.Services
             _userRepository = userRepository;
             _logger = logger;
         }
+
         public async Task<Models.User?> GetByIdAsync(int id)
         {
             return (await _userRepository.GetByIdAsync(id)).ToModel();
+        }
+
+        public async Task<Models.User?> GetByNumberAsync(string number)
+        {
+            return (await _userRepository.GetByNumberAsync(number)).ToModel();
         }
 
         public async Task<List<Models.User?>> GetAllUsersAsync()
@@ -34,7 +40,6 @@ namespace DeskPlan.Data.Services
         {
             try
             {
-                // TODO: check Number, use custom validator?
                 await _userRepository.InsertUserAsync(user.ToEntity());
             }
             catch (System.Exception)

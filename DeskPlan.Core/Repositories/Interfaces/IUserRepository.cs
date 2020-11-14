@@ -8,6 +8,8 @@ namespace DeskPlan.Core.Repositories.Interfaces
     {
         Task<User> GetByIdAsync(int id);
 
+        Task<User> GetByNumberAsync(string number);
+
         Task<List<User>> GetAllUsersAsync();
 
         Task UpsertUserAsync(User user);

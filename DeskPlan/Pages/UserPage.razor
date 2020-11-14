@@ -19,7 +19,7 @@
 
 @if (isAdd || isEdit)
 {
-    <EditForm Model="@user" OnValidSubmit="@AddUser">
+    <EditForm Model="@user" OnValidSubmit="@HandleValidSubmit">
         <div class="modal fade show" tabindex="-1" style="display:block" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -32,6 +32,7 @@
 
                     <div class="modal-body">
                         <DataAnnotationsValidator />
+                        <CustomValidator @ref="customValidator" />
                         <div class="form-group">
                             <label>Number</label>
                             <InputText @bind-Value=user.Number class="form-control" id="Number" />
@@ -108,6 +109,7 @@ else
         <table class="table">
             <thead>
                 <tr>
+                    <th>Number</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
@@ -127,6 +129,7 @@ else
                     @if (user != null)
                     {
                         <tr>
+                            <td>@user.Number</td>
                             <td>@user.FirstName</td>
                             <td>@user.LastName</td>
                             <td>@user.EmailAddress</td>
@@ -149,6 +152,8 @@ else
 }
 
 @code {
+    private CustomValidator customValidator;
+
     //Model
     private Models.User? user = new Models.User();
     private List<Models.User?> users = new List<Models.User?>();
@@ -219,13 +224,38 @@ else
     }
 
     #region CRUD
-    private async void AddUser()
+    private async void HandleValidSubmit()
+    {
+        customValidator.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        if (isAdd)
+        {
+            var existingUser = (await _userService.GetByNumberAsync(user.Number));
+            if (existingUser != null)
+            {
+                errors.Add(nameof(user.Number),
+                new List<string>() {$"Number already in use for {existingUser.FirstName} {existingUser.LastName}." });
+            }
+        }
+
+        if (errors.Count() > 0)
+        {
+            customValidator.DisplayErrors(errors);
+        }
+        else
+        {
+            AddOrEditUser();
+        }
+    }
+
+    private async void AddOrEditUser()
     {
         try
         {
             if (user != null)
             {
-                //TODO check of user nummer nog niet bestaat 
                 if (isAdd) await _userService.InsertUserAsync(user);
                 if (isEdit) await _userService.UpdateUserAsync(user);
             }

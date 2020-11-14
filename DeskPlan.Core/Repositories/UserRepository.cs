@@ -78,5 +78,11 @@ namespace DeskPlan.Core.Repositories
 
             await _dpContext.SaveChangesAsync();
         }
+
+        public async Task<User> GetByNumberAsync(string number)
+        {
+            return await _dpContext.User.Where(u => u.Number == number)
+                                        .FirstOrDefaultAsync();
+        }
     }
 }

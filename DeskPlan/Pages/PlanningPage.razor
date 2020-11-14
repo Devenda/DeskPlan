@@ -16,7 +16,7 @@
 <div class="container-fluid" style="height: 100vh;">
     <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
-        <CustomValidator @ref="customValidator" />
+        @*<CustomValidator @ref="customValidator" />*@
         <div class="row pt-2">
             <div class="col-3 pl-0">
                 <label>Room</label>
@@ -125,6 +125,7 @@
     </div>
 
     @* chart js code can be found in _Host.cshtml *@
+    // TODO: popup on hover betere aanduiding datum en eindtijd weg indien er geen eind tijd is
     <div class="row pt-2" style="height: calc(100% - 140px); " id="planning">
         <div class="col" id="planning" />
     </div>
@@ -189,7 +190,7 @@
         keyDownAction = KeyDown;
 
         var plannings = await _planningService.GetAllPlanningsAsync();
-        planningSelectedMax = planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 100;//TODO: better end time when none can be found?
+        planningSelectedMax = planningMax = (plannings.Max(p => p.EndDate) - DateTime.Now)?.Days ?? 14;
     }
 
     //Needed for the first render when opening the page
@@ -289,15 +290,24 @@
                 new List<string>() { "User is required." });
         }
 
+        // add or update
         if (!isDelete)
         {
-            // add or update
+            // check occupation
             var plan = (await _planningService.IsOccupiedBy(planning.DeskId, planning.StartDate, planning.EndDate));
             if (plan != null)
             {
                 // TODO plaats melding beter in html
                 errors.Add(nameof(planning.DeskId),
                 new List<string>() { plan.EndDate != null ? $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")} till {plan.EndDate?.ToString("dd MMM yyyy")}." : $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")}." });
+            }
+
+            // check contract duration
+            planning.User = users.Where(u => u.UserId == planning.UserId).FirstOrDefault();
+            if (planning.User.EndDate != null && (planning.EndDate == null || planning.EndDate > planning.User.EndDate))
+            {
+                errors.Add(nameof(planning.UserId),
+                new List<string>() { $"User is only employed until {planning.User.EndDate?.ToString("dd MMM yyyy")}" });
             }
         }
 

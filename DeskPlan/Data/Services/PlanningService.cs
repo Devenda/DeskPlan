@@ -55,7 +55,6 @@ namespace DeskPlan.Data.Services
         {
             try
             {
-                // TODO check of user wel nog werkt in die periode
                 await _planningRepository.InsertPlanningAsync(planning.ToEntity());
             }
             catch (System.Exception)
