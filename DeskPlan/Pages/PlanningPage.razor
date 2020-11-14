@@ -16,7 +16,7 @@
 <div class="container-fluid" style="height: 100vh;">
     <EditForm Model="@planning" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
-        @*<CustomValidator @ref="customValidator" />*@
+        <CustomValidator @ref="customValidator" />
         <div class="row pt-2">
             <div class="col-3 pl-0">
                 <label>Room</label>
@@ -74,7 +74,7 @@
 
             <div class="col-2 pl-1">
                 <div class="form-group">
-                    <select @bind=planning.UserId class="form-control" id="User">
+                    <select @bind=PlanningUserId class="form-control" id="User">
                         @if (users != null)
                         {
                             foreach (Models.User user in users)
@@ -125,7 +125,7 @@
     </div>
 
     @* chart js code can be found in _Host.cshtml *@
-    // TODO: popup on hover betere aanduiding datum en eindtijd weg indien er geen eind tijd is
+    @*// TODO: popup on hover betere aanduiding datum en eindtijd weg indien er geen eind tijd is*@
     <div class="row pt-2" style="height: calc(100% - 140px); " id="planning">
         <div class="col" id="planning" />
     </div>
@@ -158,7 +158,21 @@
         }
     }
 
-    // TODO catch delete action of end time and fill in end time of contract, catch it when property changes
+    private int _planningUserId;
+
+    public int PlanningUserId
+    {
+        get { return _planningUserId; }
+        set
+        {
+            _planningUserId = value;
+            var user = _userService.GetByIdAsync(_planningUserId).Result;
+
+            planning.UserId = _planningUserId;
+            planning.EndDate = user.EndDate;
+        }
+    }
+
     private Models.Planning? planning = new Models.Planning();
     private List<Models.Planning?> plannings = new List<Models.Planning?>();
 
@@ -247,7 +261,7 @@
 
     private async Task RefreshUsers()
     {
-        users = (await _userService.GetAllUsersAsync()).OrderBy(u => (u.FirstName + " " + u.LastName))
+        users = (await _userService.GetAllEmployedUsersAsync()).OrderBy(u => (u.FirstName + " " + u.LastName))
                                                        .ToList();
     }
 
@@ -303,11 +317,14 @@
             }
 
             // check contract duration
-            planning.User = users.Where(u => u.UserId == planning.UserId).FirstOrDefault();
-            if (planning.User.EndDate != null && (planning.EndDate == null || planning.EndDate > planning.User.EndDate))
+            if (planning.UserId != 0)
             {
-                errors.Add(nameof(planning.UserId),
-                new List<string>() { $"User is only employed until {planning.User.EndDate?.ToString("dd MMM yyyy")}" });
+                planning.User = users.Where(u => u.UserId == planning.UserId).FirstOrDefault();
+                if (planning.User.EndDate != null && (planning.EndDate == null || planning.EndDate > planning.User.EndDate))
+                {
+                    errors.Add(nameof(planning.UserId),
+                    new List<string>() { $"User is only employed until {planning.User.EndDate?.ToString("dd MMM yyyy")}" });
+                }
             }
         }
 
@@ -360,8 +377,7 @@
         try
         {
             await _planningService.InsertPlanningAsync(planning);
-            // TODO set timestamps depending on added start and end time
-            await RefreshPlannings(DateTime.Now, DateTime.Now.AddDays(365));
+            await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), planning.EndDate ?? DateTime.Now.AddDays(planningSelectedMax));
         }
         catch (Exception e)
         {
@@ -407,11 +423,17 @@
     {
         if (key == "Escape")
         {
-            // TODO set focus to something else
             SetAdd();
+
+            //set focus to something else
+            JsRuntime.InvokeVoidAsync("moveFocus");
         }
 
-        // TODO del as remove: opgelet js filtert momenteel enkel op ESCAPE!
+        if (key == "Delete")
+        {
+            isDelete = true;
+            HandleValidSubmit();
+        }
     }
     #endregion
 }

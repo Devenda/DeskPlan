@@ -39,19 +39,23 @@
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
+        var chart;
+
         // needed to catch escape keypress
         document.onkeydown = (e) => {
-            if (e.key == "Escape") {
+            if (e.key == "Escape" || e.key == "Delete") {
                 DotNet.invokeMethodAsync('DeskPlan', 'KeyDownCaller', e.key);
-            }            
+            }
         }
+
+        // for drawing timeline chart
         window.drawChart = (data) => {
             google.charts.load('current', { 'packages': ['timeline'] });
             google.charts.setOnLoadCallback(drawTimelineChart);
 
             function drawTimelineChart() {
                 var container = document.getElementById('planning');
-                var chart = new google.visualization.Timeline(container);
+                chart = new google.visualization.Timeline(container);
 
                 // Listen for select event
                 google.visualization.events.addListener(chart, 'select', function () {
@@ -79,10 +83,17 @@
 
                 window.addEventListener('resize', drawChart, false);
 
+                visualization = new google.visualization.Table(document.getElementById('planning'));
+
                 function drawChart() {
                     chart.draw(dataTable);
                 }
             }
+        }
+
+        //for moving focus away from chart
+        window.moveFocus = (_) => {
+            chart.setSelection([]);
         }
     </script>
 </body>

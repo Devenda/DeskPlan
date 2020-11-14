@@ -2,6 +2,7 @@
 using DeskPlan.Core.Entities;
 using DeskPlan.Core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,11 @@ namespace DeskPlan.Core.Repositories
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _dpContext.User.ToListAsync();
+        }
+
+        public async Task<List<User>> GetAllEmployedUsersAsync()
+        {
+            return await _dpContext.User.Where(u => u.EndDate == null || u.EndDate >= DateTime.Now).ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)

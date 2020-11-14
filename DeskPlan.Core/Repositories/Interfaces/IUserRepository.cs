@@ -12,6 +12,8 @@ namespace DeskPlan.Core.Repositories.Interfaces
 
         Task<List<User>> GetAllUsersAsync();
 
+        Task<List<User>> GetAllEmployedUsersAsync();
+
         Task UpsertUserAsync(User user);
 
         Task InsertUserAsync(User user);

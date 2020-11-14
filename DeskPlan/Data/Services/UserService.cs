@@ -35,6 +35,11 @@ namespace DeskPlan.Data.Services
             return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
                                                              .ToList();
         }
+        public async Task<List<Models.User?>> GetAllEmployedUsersAsync()
+        {
+            return (await _userRepository.GetAllEmployedUsersAsync()).Select(u => u.ToModel())
+                                                                     .ToList();
+        }
 
         public async Task InsertUserAsync(Models.User user)
         {
