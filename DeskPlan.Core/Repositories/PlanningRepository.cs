@@ -73,7 +73,12 @@ namespace DeskPlan.Core.Repositories
 
             await _dpContext.SaveChangesAsync();
         }
+
+        public async Task<List<Planning>> GetAllActivePlanningsForDeskAsync(int deskId)
+        {
+            return await _dpContext.Planning.Where(p => p.DeskId == deskId)
+                                            .Where(p => p.EndDate == null || p.EndDate >= DateTime.Now)
+                                            .ToListAsync();
+        }
     }
-
-
 }

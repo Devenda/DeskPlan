@@ -2,6 +2,7 @@
 
 @inject DeskPlan.Data.Services.DeskService _deskService
 @inject DeskPlan.Data.Services.RoomService _RoomService
+@inject DeskPlan.Data.Services.PlanningService _PlanningService
 
 @if (isAdd || isEdit)
 {
@@ -67,6 +68,10 @@
 
                 <div class="modal-body">
                     <p>Delete Desk "@desk?.Name"?</p>
+                    @if (NbrActivePlannings > 0)
+                    {
+                        <p>It is used in @NbrActivePlannings active @(NbrActivePlannings > 1?"plannings":"planning"). </p>
+                    }
                 </div>
 
                 <div class="modal-footer">
@@ -150,6 +155,9 @@ else
     //Error handling
     [CascadingParameter(Name = "ErrorComponent")]
     protected IErrorComponent ErrorComponent { get; set; } = null!;
+
+    //HTML
+    private int NbrActivePlannings;
 
     #region UI Control
     private async void Add()
@@ -300,6 +308,8 @@ else
         try
         {
             desk = await _deskService.GetByIdAsync(deskId);
+
+            NbrActivePlannings = (await _PlanningService.GetAllActivePlanningsForDeskAsync(deskId)).Count;
 
             if (!confirmed) isDelete = true;
             else isDelete = false;

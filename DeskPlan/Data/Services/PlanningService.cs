@@ -29,6 +29,14 @@ namespace DeskPlan.Data.Services
             return SetEndDates(planning);
         }
 
+        public async Task<List<Models.Planning>> GetAllActivePlanningsForDeskAsync(int deskId)
+        {
+            var planning = (await _planningRepository.GetAllActivePlanningsForDeskAsync(deskId)).Select(r => r.ToModel())
+                                                                                          .ToList();
+
+            return SetEndDates(planning);
+        }
+
         public async Task<List<Models.Planning>> GetPlanningsActiveBetweenAsync(DateTime startDate, DateTime endDate)
         {
             var planning = (await _planningRepository.GetPlanningsActiveBetweenAsync(startDate, endDate)).Select(r => r.ToModel())
