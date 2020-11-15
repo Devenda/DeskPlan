@@ -12,77 +12,57 @@ namespace DeskPlan.Data.Mapper
         // User
         public static Models.User ToModel(this Entities.User user)
         {
-            if (user != null)
+            return new Models.User
             {
-                return new Models.User
-                {
-                    UserId = user.UserId,
-                    Number = user.Number,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    EmailAddress = user.EmailAddress,
-                    StartDate = user.StartDate,
-                    EndDate = user.EndDate
-                };
-            }
-
-            return null;
+                UserId = user.UserId,
+                Number = user.Number,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                EmailAddress = user.EmailAddress,
+                StartDate = user.StartDate,
+                EndDate = user.EndDate
+            };
         }
 
         // Room
         public static Models.Room ToModel(this Entities.Room room)
         {
-            if (room != null)
+            return new Models.Room
             {
-                return new Models.Room
-                {
-                    RoomId = room.RoomId,
-                    Name = room.Name,
-                    MaxDesks = room.MaxDesks.ToString()
-                };
-            }
-
-            return null;
+                RoomId = room.RoomId,
+                Name = room.Name,
+                MaxDesks = room.MaxDesks.ToString()
+            };
         }
 
         // Desk
         public static Models.Desk ToModel(this Entities.Desk desk)
         {
-            if (desk != null)
+            return new Models.Desk
             {
-                return new Models.Desk
-                {
-                    DeskId = desk.DeskId,
-                    Name = desk.Name,
-                    Flex = desk.Flex,
-                    LocationX = desk.LocationX,
-                    LocationY = desk.LocationY,
-                    RoomId = desk.RoomId,
-                    Room = desk.Room.ToModel()
-                };
-            }
-
-            return null;
+                DeskId = desk.DeskId,
+                Name = desk.Name,
+                Flex = desk.Flex,
+                LocationX = desk.LocationX,
+                LocationY = desk.LocationY,
+                RoomId = desk.RoomId,
+                Room = desk.Room.ToModel()
+            };
         }
 
         // Planning
         public static Models.Planning ToModel(this Entities.Planning planning)
         {
-            if (planning != null)
+            return new Models.Planning
             {
-                return new Models.Planning
-                {
-                    PlanningId = planning.PlanningId,
-                    DeskId = planning.DeskId,
-                    Desk = planning.Desk.ToModel(),
-                    UserId = planning.UserId,
-                    User = planning.User.ToModel(),
-                    StartDate = planning.StartDate,
-                    EndDate = planning.EndDate
-                };
-            }
-
-            return null;
+                PlanningId = planning.PlanningId,
+                DeskId = planning.DeskId,
+                Desk = planning.Desk.ToModel(),
+                UserId = planning.UserId,
+                User = planning.User.ToModel(),
+                StartDate = planning.StartDate,
+                EndDate = planning.EndDate
+            };
         }
     }
 }

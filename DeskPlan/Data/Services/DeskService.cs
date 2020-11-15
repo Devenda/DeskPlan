@@ -30,8 +30,7 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.Desk?>> GetAllDesksForRoomAsync(int roomId)
         {
-            return (await _deskRepository.GetAllDesksForRoomAsync(roomId)).ConvertAll(d => d.ToModel())
-;
+            return (await _deskRepository.GetAllDesksForRoomAsync(roomId)).ConvertAll(d => d.ToModel());
         }
 
         public async Task InsertDeskAsync(Models.Desk desk)

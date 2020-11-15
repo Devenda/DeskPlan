@@ -150,7 +150,7 @@
         {
             roomId = value;
 
-            RefreshDesks(roomId);
+            RefreshDesks(roomId).Wait();
             if (desks != null && desks.Any())
             {
                 planning.DeskId = desks.FirstOrDefault().DeskId;

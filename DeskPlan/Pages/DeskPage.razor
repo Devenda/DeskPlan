@@ -143,7 +143,7 @@ else
     private CustomValidator customValidator;
 
     //Model
-    private Models.Desk? desk = new Models.Desk();
+    private Models.Desk desk = new Models.Desk();
     private List<Models.Desk?> desks = new List<Models.Desk?>();
     private List<Models.Room> rooms = new List<Models.Room>();
 
@@ -227,8 +227,7 @@ else
         }
         else
         {
-            if (isAdd) await AddDesk();
-            if (isEdit) await EditDesk();
+            AddOrEditDesk();
         }
     }
 
@@ -249,35 +248,17 @@ else
         else return false;
     }
 
-    private async Task AddDesk()
+    private async void AddOrEditDesk()
     {
         try
         {
             if (desk != null)
             {
-                await _deskService.InsertDeskAsync(desk);
+                if (isAdd) await _deskService.InsertDeskAsync(desk);
+                if (isEdit) await _deskService.UpdateDeskAsync(desk);
             }
 
-            isAdd = false;
-            await RefreshDesks();
-        }
-        catch (Exception e)
-        {
-            CloseModal();
-            ErrorComponent.ShowError(e.Message, e.StackTrace ?? "Please reload");
-        }
-    }
-
-    private async Task EditDesk()
-    {
-        try
-        {
-            if (desk != null)
-            {
-                await _deskService.UpdateDeskAsync(desk);
-            }
-
-            isEdit = false;
+            isEdit = isAdd = false;
             await RefreshDesks();
         }
         catch (Exception e)

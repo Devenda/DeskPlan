@@ -16,8 +16,7 @@ namespace DeskPlan.Data.Models
         [Required]
         public string FirstName { get; set; } = null!;
 
-        [Required]
-        public string LastName { get; set; } = null!;
+        public string? LastName { get; set; }
 
         public string? EmailAddress { get; set; }
 
