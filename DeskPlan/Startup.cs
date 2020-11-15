@@ -79,7 +79,8 @@ namespace DeskPlan
             });
 
             // Open the Electron-Window here
-            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
+            var windowOptions = new BrowserWindowOptions { Width = 1600, Height = 1200 };
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(windowOptions));
 
             // Config menu
             StartElectron();
@@ -87,7 +88,6 @@ namespace DeskPlan
 
         private void StartElectron()
         {
-            // TODO Set bigger when starting
             // TODO Version number
             var menu = new MenuItem[] {
                 //new MenuItem {
