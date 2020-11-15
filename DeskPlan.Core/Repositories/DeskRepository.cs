@@ -25,8 +25,15 @@ namespace DeskPlan.Core.Repositories
 
         public async Task<List<Desk>> GetAllDesksForRoomAsync(int roomId)
         {
-            return await _dpContext.Desk.Where(d => d.RoomId == roomId)
-                                        .ToListAsync();
+            var desks = await _dpContext.Desk.Where(d => d.RoomId == roomId)
+                                             .ToListAsync();
+
+            foreach (var desk in desks)
+            {
+                _dpContext.Entry(desk).State = EntityState.Detached;
+            }
+
+            return desks;
         }
 
         public async Task<Desk> GetByIdAsync(int id)
