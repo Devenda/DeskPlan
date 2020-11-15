@@ -18,6 +18,6 @@ namespace DeskPlan.Data.Models
         [Required]
         public int RoomId { get; set; }
 
-        public Room Room { get; set; } = null!;
+        public Room Room { get; set; }
     }
 }
