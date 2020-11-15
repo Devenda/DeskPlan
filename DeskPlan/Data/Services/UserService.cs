@@ -32,13 +32,13 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.User?>> GetAllUsersAsync()
         {
-            return (await _userRepository.GetAllUsersAsync()).Select(u => u.ToModel())
-                                                             .ToList();
+            return (await _userRepository.GetAllUsersAsync()).ConvertAll(u => u.ToModel())
+;
         }
         public async Task<List<Models.User?>> GetAllEmployedUsersAsync()
         {
-            return (await _userRepository.GetAllEmployedUsersAsync()).Select(u => u.ToModel())
-                                                                     .ToList();
+            return (await _userRepository.GetAllEmployedUsersAsync()).ConvertAll(u => u.ToModel())
+;
         }
 
         public async Task InsertUserAsync(Models.User user)
@@ -49,7 +49,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -62,7 +61,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -75,7 +73,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -89,7 +86,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

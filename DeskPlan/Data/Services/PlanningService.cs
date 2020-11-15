@@ -23,25 +23,22 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.Planning>> GetAllPlanningsAsync()
         {
-            var planning = (await _planningRepository.GetAllPlanningsAsync()).Select(r => r.ToModel())
-                                                                             .ToList();
-
+            var planning = (await _planningRepository.GetAllPlanningsAsync()).ConvertAll(r => r.ToModel())
+;
             return SetEndDates(planning);
         }
 
         public async Task<List<Models.Planning>> GetAllActivePlanningsForDeskAsync(int deskId)
         {
-            var planning = (await _planningRepository.GetAllActivePlanningsForDeskAsync(deskId)).Select(r => r.ToModel())
-                                                                                          .ToList();
-
+            var planning = (await _planningRepository.GetAllActivePlanningsForDeskAsync(deskId)).ConvertAll(r => r.ToModel())
+;
             return SetEndDates(planning);
         }
 
         public async Task<List<Models.Planning>> GetPlanningsActiveBetweenAsync(DateTime startDate, DateTime endDate)
         {
-            var planning = (await _planningRepository.GetPlanningsActiveBetweenAsync(startDate, endDate)).Select(r => r.ToModel())
-                                                                                                         .ToList();
-
+            var planning = (await _planningRepository.GetPlanningsActiveBetweenAsync(startDate, endDate)).ConvertAll(r => r.ToModel())
+;
             return SetEndDates(planning);
         }
 
@@ -67,7 +64,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -80,7 +76,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -93,7 +88,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -106,7 +100,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

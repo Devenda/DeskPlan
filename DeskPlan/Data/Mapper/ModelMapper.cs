@@ -10,7 +10,7 @@ namespace DeskPlan.Data.Mapper
     public static class ModelMapper
     {
         // User
-        public static Models.User? ToModel(this Entities.User user)
+        public static Models.User ToModel(this Entities.User user)
         {
             if (user != null)
             {
@@ -30,7 +30,7 @@ namespace DeskPlan.Data.Mapper
         }
 
         // Room
-        public static Models.Room? ToModel(this Entities.Room room)
+        public static Models.Room ToModel(this Entities.Room room)
         {
             if (room != null)
             {
@@ -46,7 +46,7 @@ namespace DeskPlan.Data.Mapper
         }
 
         // Desk
-        public static Models.Desk? ToModel(this Entities.Desk desk)
+        public static Models.Desk ToModel(this Entities.Desk desk)
         {
             if (desk != null)
             {
@@ -66,7 +66,7 @@ namespace DeskPlan.Data.Mapper
         }
 
         // Planning
-        public static Models.Planning? ToModel(this Entities.Planning planning)
+        public static Models.Planning ToModel(this Entities.Planning planning)
         {
             if (planning != null)
             {

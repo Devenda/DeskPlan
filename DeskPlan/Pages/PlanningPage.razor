@@ -311,7 +311,7 @@
             var plan = (await _planningService.IsOccupiedBy(planning.DeskId, planning.StartDate, planning.EndDate));
             if (plan != null)
             {
-                // TODO plaats melding beter in html
+                // TODO: plaats melding beter in html
                 errors.Add(nameof(planning.DeskId),
                 new List<string>() { plan.EndDate != null ? $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")} till {plan.EndDate?.ToString("dd MMM yyyy")}." : $"Desk already occupied from {plan.StartDate.ToString("dd MMM yyyy")}." });
             }

@@ -22,8 +22,7 @@ namespace DeskPlan.Data.Services
 
         public async Task<List<Models.Room?>> GetAllRooms()
         {
-            return (await _roomRepository.GetAllRoomsAsync()).Select(r => r.ToModel())                                                             
-                                                             .ToList();
+            return (await _roomRepository.GetAllRoomsAsync()).ConvertAll(r => r.ToModel());
         }
 
         public async Task InsertRoomAsync(Models.Room room)
@@ -34,7 +33,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -47,7 +45,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -60,7 +57,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

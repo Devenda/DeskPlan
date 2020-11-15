@@ -24,14 +24,14 @@ namespace DeskPlan.Data.Services
         {
             return (await _deskRepository.GetAllDesksAsync()).Select(d => d.ToModel())
                                                              .OrderBy(d => d.RoomId)
-                                                             .OrderBy(d => d.Name)
+                                                             .ThenBy(d => d.Name)
                                                              .ToList();
         }
 
         public async Task<List<Models.Desk?>> GetAllDesksForRoomAsync(int roomId)
         {
-            return (await _deskRepository.GetAllDesksForRoomAsync(roomId)).Select(d => d.ToModel())
-                                                                          .ToList();
+            return (await _deskRepository.GetAllDesksForRoomAsync(roomId)).ConvertAll(d => d.ToModel())
+;
         }
 
         public async Task InsertDeskAsync(Models.Desk desk)
@@ -42,7 +42,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -55,7 +54,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -68,7 +66,6 @@ namespace DeskPlan.Data.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

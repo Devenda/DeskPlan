@@ -56,8 +56,7 @@ namespace DeskPlan
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            UserImport userImport)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -88,7 +87,6 @@ namespace DeskPlan
 
         private void StartElectron()
         {
-            // TODO Version number
             var menu = new MenuItem[] {
                 //new MenuItem {
                 //    Label = "File",
