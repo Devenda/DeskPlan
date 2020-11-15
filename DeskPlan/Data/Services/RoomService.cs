@@ -56,7 +56,6 @@ namespace DeskPlan.Data.Services
         {
             try
             {
-                //TODO: Check for desks
                 await _roomRepository.DeleteRoomAsync(room.ToEntity());
             }
             catch (System.Exception)

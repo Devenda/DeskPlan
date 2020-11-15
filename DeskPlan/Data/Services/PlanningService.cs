@@ -89,7 +89,6 @@ namespace DeskPlan.Data.Services
         {
             try
             {
-                //TODO: Check for plannings
                 await _planningRepository.DeletePlanningAsync(planning.ToEntity());
             }
             catch (System.Exception)

@@ -389,6 +389,7 @@
     {
         try
         {
+            // TODO: eventueel extra bevestiging vragen?
             await _planningService.DeletePlanningAsync(planning);
 
             await RefreshPlannings(DateTime.Now.AddDays(planningSelectedMin), DateTime.Now.AddDays(planningSelectedMax));
